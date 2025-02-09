@@ -34,6 +34,9 @@ module.exports = {
 				base: '500',
 				heading: '700',
 			},
+			fontFamily: {
+				"pirate-kids": ["pirate-kids", "sans-serif"],
+			}
 		},
 	},
 	plugins: [require("tailwindcss-animate")],
