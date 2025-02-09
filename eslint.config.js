@@ -33,6 +33,7 @@ export default tseslint.config(
       ...unicorn.configs.recommended.rules,
       'semi': ['error', 'always'],
       'quotes': ['error', 'double'],
+      'func-style': ['error', 'expression']
     },
   },
 )
