@@ -1,19 +1,60 @@
 /* eslint-disable unicorn/filename-case */
 
+//custom
 import { Button } from "./components/ui/button";
-import { cn } from "./lib/utils";
+import {
+  AlertDialogTrigger,
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogDescription,
+} from "./components/ui/alert-dialog";
 
-const App: React.FC = () => (
-  <div
-    className={cn(
-      "bg-cover w-screen h-screen bg-[url(./assets/images/map-bg.png)]",
-      "bg-no-repeat",
-    )}
-  >
-    <h1 className="font-pirate-kids text-3xl">Pirate Land</h1>
-    <Button>Vanakkam</Button>
-    <Button>Vanakkam</Button>
-  </div>
-);
+import { cn } from "./lib/utils";
+import { motion } from "framer-motion";
+import { ShipWheel } from "lucide-react";
+
+const Loader = () => {
+  return (
+    <div className="flex justify-center items-center flex-col gap-3">
+      <motion.div
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
+      >
+        <ShipWheel className="w-20 h-20" />
+      </motion.div>
+      <p className="text-lg font-semibold font-pirate-kids">
+        Loading the High Seas...
+      </p>
+    </div>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <div
+      className={cn(
+        "bg-cover w-screen h-screen bg-[url(./assets/images/map-bg.png)]",
+        `bg-no-repeat flex items-center justify-center`
+      )}
+    >
+      <div className="w-64 h-20 relative bg-orange-300 flex flex-col justify-center">
+        <h1 className="font-pirate-kids text-3xl ml-14">Pirate Land</h1>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button>Play</Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogDescription>
+                <Loader />
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
+  );
+};
 
 export default App;
