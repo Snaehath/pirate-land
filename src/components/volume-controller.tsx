@@ -1,21 +1,18 @@
 import { Volume1, Volume2, VolumeX } from "lucide-react";
-import { useState } from "react";
 
 // custom
 import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Slider } from "./ui/slider";
+import { useAppContext } from "@/contexts/app";
 
 const VolumeController: React.FC = () => {
-  // states
-  const [volume, setVolume] = useState<number>(50);
+  // hooks
+  const { volume, handleVolumeChange } = useAppContext();
 
   // local variables
-  const VolumeIcon = () => volume === 0 
-    ? <VolumeX /> 
-    : (volume <= 50 
-      ? <Volume1 /> 
-      : <Volume2 />);
+  const VolumeIcon = () =>
+    volume === 0 ? <VolumeX /> : (volume <= 50 ? <Volume1 /> : <Volume2 />);
 
   return (
     <Popover>
@@ -29,7 +26,7 @@ const VolumeController: React.FC = () => {
           <VolumeIcon />
           <Slider
             value={[volume]}
-            onValueChange={(value) => setVolume(value[0])}
+            onValueChange={handleVolumeChange!}
             max={100}
             step={1}
             className="flex-1"

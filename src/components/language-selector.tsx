@@ -1,5 +1,4 @@
 import { Languages } from "lucide-react";
-import { useState } from "react";
 
 // custom
 import { Button } from "./ui/button";
@@ -11,17 +10,21 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { LANGUAGES } from "@/data/app";
-import { Language } from "@/lib/types";
+import { useAppContext } from "@/contexts/app";
+import { Language, LanguageCode } from "@/lib/types";
 
 const LanguageSelector: React.FC = () => {
-  // states
-  const [language, setLanguage] = useState<Language>(LANGUAGES[0]);
+  // hooks
+  const { languageCode, setLanguageCode } = useAppContext();
 
   const handleLanguageChange = (v: string) => {
-    const selectedLanguage = LANGUAGES.find((lang) => lang.code === v);
-    if (!selectedLanguage) return;
-    setLanguage(selectedLanguage);
+    setLanguageCode!(v as LanguageCode);
   };
+
+  // local variables
+  const language = LANGUAGES.find(
+    (lang) => lang.code === languageCode
+  ) as Language;
 
   return (
     <DropdownMenu>
@@ -35,16 +38,14 @@ const LanguageSelector: React.FC = () => {
           value={language.code}
           onValueChange={handleLanguageChange}
         >
-          {
-            LANGUAGES.map(lang => 
-              <DropdownMenuRadioItem
-                key={lang.code}
-                value={lang.code}
-              >
-                {lang.name}
-              </DropdownMenuRadioItem>
-            )
-          }
+          {LANGUAGES.map((lang) => (
+            <DropdownMenuRadioItem
+              key={lang.code}
+              value={lang.code}
+            >
+              {lang.name}
+            </DropdownMenuRadioItem>
+          ))}
         </DropdownMenuRadioGroup>
       </DropdownMenuContent>
     </DropdownMenu>
