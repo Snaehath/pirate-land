@@ -11,18 +11,13 @@ import {
 } from "./components/ui/alert-dialog";
 
 import { cn } from "./lib/utils";
-import { motion } from "framer-motion";
 import { ShipWheel } from "lucide-react";
 
 const Loader = () => {
   return (
     <div className="flex justify-center items-center flex-col gap-3">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-      >
-        <ShipWheel className="w-20 h-20" />
-      </motion.div>
+      <ShipWheel className="w-20 h-20 animate-spin" />
+
       <p className="text-lg font-semibold font-pirate-kids">
         Loading the High Seas...
       </p>
