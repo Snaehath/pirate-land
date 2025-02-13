@@ -1,48 +1,30 @@
 /* eslint-disable unicorn/filename-case */
 
-import { Card, CardContent } from "./components/ui/card";
-import { useIsMobile } from "./hooks/use-mobile";
-import Branding from "./components/login/branding";
-import VolumeController from "./components/volume-controller";
-import LanguageSelector from "./components/language-selector";
-import ParaButton from "./components/login/para-button";
+import { lazy, Suspense } from "react";
+import { Route, Routes } from "react-router";
 
-const App: React.FC = () => {
-  // hooks
-  const isMobile = useIsMobile();
+// pages
+const LoginPage = lazy(() => import("./pages/login"));
+const HomePage = lazy(() => import("./pages/home"));
+const ErrorPage = lazy(() => import("./pages/error"));
 
-  return (
-    <div className="flex flex-col p-3 justify-between bg-cover w-screen h-screen bg-[url(./assets/images/map-bg.png)] bg-no-repeat">
-      {/* top -> settings (only visible in mobile) */}
-      {isMobile ? (
-        <Card className="self-end">
-          <CardContent className="p-3 gap-3 flex items-center">
-            <VolumeController />
-            <LanguageSelector />
-          </CardContent>
-        </Card>
-      ) : (
-        <div />
-      )}
-      {/* center -> welcome card */}
-      <Card className="self-center">
-        <CardContent className="p-6 gap-3 flex flex-col items-center justify-center">
-          <p className="font-pirate-kids text-5xl sm:text-7xl">Pirate Land</p>
-          <ParaButton />
-        </CardContent>
-      </Card>
-      {/* bottom -> Branding & Settings */}
-      <div className="w-full flex items-center justify-center sm:justify-between">
-        <Branding />
-        <Card className="hidden sm:inline">
-          <CardContent className="p-3 gap-3 flex items-center">
-            <VolumeController />
-            <LanguageSelector />
-          </CardContent>
-        </Card>
-      </div>
-    </div>
-  );
-};
+const App: React.FC = () => (
+  <Suspense fallback={<h1>loading...</h1>}>
+    <Routes>
+      <Route
+        path="/"
+        element={<LoginPage />}
+      />
+      <Route
+        path="/home"
+        element={<HomePage />}
+      />
+      <Route
+        path="/*"
+        element={<ErrorPage />}
+      />
+    </Routes>
+  </Suspense>
+);
 
 export default App;
