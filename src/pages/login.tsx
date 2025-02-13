@@ -3,7 +3,7 @@ import Branding from "@/components/login/branding";
 import ParaButton from "@/components/login/para-button";
 import { Card, CardContent } from "@/components/ui/card";
 import VolumeController from "@/components/volume-controller";
-import { useIsMobile } from "@/hooks/use-mobile";
+import useIsMobile from "@/hooks/use-mobile";
 
 const LoginPage: React.FC = () => {
   // hooks

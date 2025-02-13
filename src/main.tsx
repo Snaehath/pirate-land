@@ -5,11 +5,14 @@ import { BrowserRouter } from "react-router";
 // custom
 import "./index.css";
 import App from "./App.tsx";
+import AppContextProvider from "./contexts/app.tsx";
 
 createRoot(document.querySelector("#root")!).render(
   <StrictMode>
     <BrowserRouter>
-      <App />
+      <AppContextProvider>
+        <App />
+      </AppContextProvider>
     </BrowserRouter>
   </StrictMode>,
 );
