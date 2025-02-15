@@ -39,12 +39,20 @@ export interface ButtonProperties
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
-  ({ className, variant, size, asChild = false, ...properties }, reference) => {
+  ({ className, variant, size, asChild = false, onClick, ...properties }, reference) => {
     const Comp = asChild ? Slot : "button";
+    
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+      const audio = new Audio("/audio/tree-hit.mp3");
+      audio.play();
+      onClick!(event);
+    };
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={reference}
+        onClick={handleClick}
         {...properties}
       />
     );
