@@ -7,6 +7,7 @@ import Branding from "./login/branding";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import VolumeController from "./volume-controller";
+import ToolTip from "./tooltip";
 
 const Footer: React.FC = () => {
   // hooks
@@ -25,12 +26,14 @@ const Footer: React.FC = () => {
           <VolumeController />
           <LanguageSelector />
           {location?.pathname !== "/" && (
-            <Button
-              size="icon"
-              onClick={handleLogout}
-            >
-              <LogOut />
-            </Button>
+            <ToolTip content="Log Out">
+              <Button
+                size="icon"
+                onClick={handleLogout}
+              >
+                <LogOut />
+              </Button>
+            </ToolTip>
           )}
         </CardContent>
       </Card>

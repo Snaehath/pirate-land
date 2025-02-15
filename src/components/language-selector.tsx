@@ -12,6 +12,7 @@ import {
 } from "./ui/dropdown-menu";
 import { LANGUAGES } from "@/data/app";
 import { Language } from "@/lib/types";
+import ToolTip from "./tooltip";
 
 const LanguageSelector: React.FC = () => {
   // hooks
@@ -29,9 +30,11 @@ const LanguageSelector: React.FC = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button size="icon">
-          <Languages />
-        </Button>
+        <ToolTip content="Language">
+          <Button size="icon">
+            <Languages />
+          </Button>
+        </ToolTip>
       </DropdownMenuTrigger>
       <DropdownMenuContent>
         <DropdownMenuRadioGroup

@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import { Slider } from "./ui/slider";
 import { useAppContext } from "@/contexts/app";
+import ToolTip from "./tooltip";
 
 const VolumeController: React.FC = () => {
   // hooks
@@ -25,9 +26,11 @@ const VolumeController: React.FC = () => {
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button size="icon">
-          <VolumeIcon />
-        </Button>
+        <ToolTip content="Music">
+          <Button size="icon">
+            <VolumeIcon />
+          </Button>
+        </ToolTip>
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex items-center gap-4 px-1">
