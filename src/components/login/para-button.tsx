@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { useTranslation } from "react-i18next";
 
 // custom
@@ -6,10 +7,18 @@ import paraIcon from "../../assets/icons/para.svg";
 
 const ParaButton: React.FC = () => {
   // hooks
+  const navigate = useNavigate();
   const { t } = useTranslation("login");
 
+  const handleClick = () => {
+    navigate("/home");
+  };
+
   return (
-    <Button variant="neutral">
+    <Button
+      variant="neutral"
+      onClick={handleClick}
+    >
       <img
         src={paraIcon}
         alt="Para"

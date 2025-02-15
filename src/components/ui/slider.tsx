@@ -11,7 +11,7 @@ const Slider = React.forwardRef<
   <SliderPrimitive.Root
     ref={reference}
     className={cn(
-      "relative flex w-full touch-none select-none items-center",
+      "animate-fade-in relative flex w-full touch-none select-none items-center",
       className,
     )}
     {...properties}

@@ -8,6 +8,8 @@ import { LANGUAGES } from "@/data/app";
 i18n.use(HttpApi).use(initReactI18next).init({
   lng: "en", 
   fallbackLng: "en", 
+  defaultNS: "login",
+  ns: ["login"],
   supportedLngs: LANGUAGES.map((language) => language.code),
   interpolation: {
     escapeValue: false,
