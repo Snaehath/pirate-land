@@ -9,7 +9,7 @@ import Footer from "./components/footer";
 
 // pages
 const LoginPage = lazy(() => import("./pages/login"));
-const HomePage = lazy(() => import("./pages/home"));
+const HarborPage = lazy(() => import("./pages/harbor"));
 const ErrorPage = lazy(() => import("./pages/error"));
 
 const App: React.FC = () => (
@@ -22,8 +22,8 @@ const App: React.FC = () => (
           element={<LoginPage />}
         />
         <Route
-          path="/home"
-          element={<HomePage />}
+          path="/harbor"
+          element={<HarborPage />}
         />
         <Route
           path="/*"

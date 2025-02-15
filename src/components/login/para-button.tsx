@@ -11,7 +11,7 @@ const ParaButton: React.FC = () => {
   const { t } = useTranslation("login");
 
   const handleClick = () => {
-    navigate("/home");
+    navigate("/harbor");
   };
 
   return (
