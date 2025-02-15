@@ -29,13 +29,13 @@ const LanguageSelector: React.FC = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <ToolTip content="Language">
+      <ToolTip content="Language">
+        <DropdownMenuTrigger asChild>
           <Button size="icon">
             <Languages />
           </Button>
-        </ToolTip>
-      </DropdownMenuTrigger>
+        </DropdownMenuTrigger>
+      </ToolTip>
       <DropdownMenuContent>
         <DropdownMenuRadioGroup
           value={language.code}

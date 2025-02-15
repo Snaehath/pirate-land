@@ -25,13 +25,13 @@ const VolumeController: React.FC = () => {
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <ToolTip content="Music">
+      <ToolTip content="Music">
+        <PopoverTrigger asChild>
           <Button size="icon">
             <VolumeIcon />
           </Button>
-        </ToolTip>
-      </PopoverTrigger>
+        </PopoverTrigger>
+      </ToolTip>
       <PopoverContent>
         <div className="flex items-center gap-4 px-1">
           <Button
