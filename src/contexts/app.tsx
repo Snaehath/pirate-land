@@ -80,7 +80,7 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     <>
       <audio
         ref={audioReference}
-        src="/bg.mp3"
+        src="/audio/bg.mp3"
         loop
         autoPlay
       />

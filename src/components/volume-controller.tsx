@@ -14,6 +14,14 @@ const VolumeController: React.FC = () => {
   const VolumeIcon = () =>
     volume === 0 ? <VolumeX /> : (volume <= 50 ? <Volume1 /> : <Volume2 />);
 
+  const handleVolumeIconClick = () => {
+    if (volume > 0) {
+      handleVolumeChange!([0]);
+    } else {
+      handleVolumeChange!([30]);
+    }
+  };
+
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -23,7 +31,13 @@ const VolumeController: React.FC = () => {
       </PopoverTrigger>
       <PopoverContent>
         <div className="flex items-center gap-4 px-1">
-          <VolumeIcon />
+          <Button
+            variant="reverse"
+            size="icon"
+            onClick={handleVolumeIconClick}
+          >
+            <VolumeIcon />
+          </Button>
           <Slider
             value={[volume]}
             onValueChange={handleVolumeChange!}
