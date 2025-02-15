@@ -9,12 +9,8 @@ import {
   useState,
 } from "react";
 
-// custom
-import { LanguageCode } from "@/lib/types";
-
 const defaultState: AppContextState = {
-  languageCode: "en",
-  volume: 50,
+  volume: 30,
 };
 
 const AppContext = createContext<AppContextState>(defaultState);
@@ -26,9 +22,6 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const audioReference = useRef<HTMLAudioElement | null>(null);
 
   // states
-  const [languageCode, setLanguageCode] = useState<LanguageCode>(
-    defaultState.languageCode
-  );
   const [volume, setVolume] = useState<number>(defaultState.volume);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
@@ -44,16 +37,15 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // local variables
   const value: AppContextState = useMemo(
     () => ({
-      languageCode,
-      setLanguageCode,
       volume,
       setVolume,
       handleVolumeChange,
     }),
-    [languageCode, volume, handleVolumeChange]
+    [volume, handleVolumeChange]
   );
 
-  // play audio after first user interaction anywhere on the page
+  // play audio after first user interaction anywhere 
+  // on the page
   useEffect(() => {
     const handleUserInteraction = () => {
       if (audioReference.current && !isPlaying) {
@@ -92,8 +84,6 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
 export default AppContextProvider;
 
 interface AppContextState {
-  languageCode: LanguageCode;
-  setLanguageCode?: React.Dispatch<React.SetStateAction<LanguageCode>>;
   volume: number;
   setVolume?: React.Dispatch<React.SetStateAction<number>>;
   handleVolumeChange?: (value: number[]) => void;

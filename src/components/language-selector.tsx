@@ -1,4 +1,5 @@
 import { Languages } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // custom
 import { Button } from "./ui/button";
@@ -10,20 +11,19 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { LANGUAGES } from "@/data/app";
-import { useAppContext } from "@/contexts/app";
-import { Language, LanguageCode } from "@/lib/types";
+import { Language } from "@/lib/types";
 
 const LanguageSelector: React.FC = () => {
   // hooks
-  const { languageCode, setLanguageCode } = useAppContext();
+  const { i18n } = useTranslation();
 
-  const handleLanguageChange = (v: string) => {
-    setLanguageCode!(v as LanguageCode);
+  const handleLanguageChange = (langugeCode: string) => {
+    i18n.changeLanguage(langugeCode);
   };
 
   // local variables
   const language = LANGUAGES.find(
-    (lang) => lang.code === languageCode
+    (lang) => lang.code === i18n.resolvedLanguage,
   ) as Language;
 
   return (
