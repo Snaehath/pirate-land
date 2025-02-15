@@ -23,7 +23,7 @@ const LanguageSelector: React.FC = () => {
 
   // local variables
   const language = LANGUAGES.find(
-    (lang) => lang.code === i18n.resolvedLanguage || "en",
+    (lang) => lang.code === i18n.resolvedLanguage,
   ) as Language;
 
   return (

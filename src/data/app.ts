@@ -10,5 +10,6 @@ export const LANGUAGES: Language[] = [
   { code: "zh", name: "中文" },
   { code: "ru", name: "Русский" },
   { code: "ar", name: "العربية" },
-  { code: "ta", name: "தமிழ்" }
+  { code: "ta", name: "தமிழ்" },
+  { code: "hi", name: "हिंदी" }
 ];
