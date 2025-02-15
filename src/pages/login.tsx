@@ -1,5 +1,5 @@
+import Footer from "@/components/footer";
 import LanguageSelector from "@/components/language-selector";
-import Branding from "@/components/login/branding";
 import ParaButton from "@/components/login/para-button";
 import { Card, CardContent } from "@/components/ui/card";
 import VolumeController from "@/components/volume-controller";
@@ -29,16 +29,7 @@ const LoginPage: React.FC = () => {
           <ParaButton />
         </CardContent>
       </Card>
-      {/* bottom -> Branding & Settings */}
-      <div className="w-full flex items-center justify-center sm:justify-between">
-        <Branding />
-        <Card className="hidden sm:inline">
-          <CardContent className="p-3 gap-3 flex items-center">
-            <VolumeController />
-            <LanguageSelector />
-          </CardContent>
-        </Card>
-      </div>
+      <Footer />
     </div>
   );
 };

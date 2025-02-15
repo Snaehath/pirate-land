@@ -3,16 +3,16 @@ import { useNavigate } from "react-router";
 
 // custom
 import LanguageSelector from "@/components/language-selector";
-import Branding from "@/components/login/branding";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import VolumeController from "@/components/volume-controller";
 import useIsMobile from "@/hooks/use-mobile";
+import Footer from "@/components/footer";
 
 const HomePage: React.FC = () => {
   // hooks
-  const navigate = useNavigate();
   const isMobile = useIsMobile();
+  const navigate = useNavigate();
 
   const handleLogout = () => {
     navigate("/");
@@ -53,22 +53,7 @@ const HomePage: React.FC = () => {
           <Button>Profile</Button>
         </CardContent>
       </Card>
-      {/* bottom -> Branding & Settings */}
-      <div className="w-full flex items-center justify-center sm:justify-between">
-        <Branding />
-        <Card className="hidden sm:inline">
-          <CardContent className="p-3 gap-3 flex items-center">
-            <VolumeController />
-            <LanguageSelector />
-            <Button
-              size="icon"
-              onClick={handleLogout}
-            >
-              <LogOut />
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <Footer />
     </div>
   );};
 
