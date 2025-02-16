@@ -1,12 +1,12 @@
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { OAuthMethod, ParaModal } from "@getpara/react-sdk";
+import { ParaModal } from "@getpara/react-sdk";
 
 // custom
 import { Button } from "../ui/button";
 import paraIcon from "../../assets/icons/para.svg";
 import paraClient from "@/web3/para-client";
-import { APP_NAME } from "@/data/app";
+import { PARA_MODAL_PROPS } from "@/data/app";
 
 const ParaButton: React.FC = () => {
   // hooks
@@ -41,18 +41,7 @@ const ParaButton: React.FC = () => {
         para={paraClient}
         isOpen={paraOpen}
         onClose={handleParaClose}
-        appName={APP_NAME}
-        logo="https://pirateland.vercel.app/favicon.svg"
-        oAuthMethods={[
-          OAuthMethod.GOOGLE,
-          OAuthMethod.APPLE,
-          OAuthMethod.FACEBOOK,
-        ]}
-        disablePhoneLogin
-        authLayout={["AUTH:FULL"]}
-        externalWallets={[]}
-        recoverySecretStepEnabled
-        onRampTestMode={true}
+        {...PARA_MODAL_PROPS}
       />
     </>
   );
