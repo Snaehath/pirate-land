@@ -36,6 +36,19 @@ module.exports = {
 			},
 			fontFamily: {
 				"pirate-kids": ["pirate-kids", "sans-serif"],
+			},
+			keyframes: {
+				"custom-fade-in": {
+					from: {
+						opacity: "0",
+					},
+					to: {
+						opacity: "1",
+					},
+				},
+			},
+			animation: {
+				"fade-in": "custom-fade-in 0.42s ease-in",
 			}
 		},
 	},
