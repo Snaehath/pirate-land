@@ -1,8 +1,8 @@
 export type LanguageCode = "en" | "zh" | "ru" | "ar" | "ta" | "hi";
 
 export type Language = {
-    name: string;
-    code: LanguageCode;
+  name: string;
+  code: LanguageCode;
 };
 
 export type TypographyVariant =
@@ -17,3 +17,8 @@ export type TypographyVariant =
   | "large"
   | "small"
   | "muted";
+
+export type Avatar = {
+  img: string;
+  alt: string;
+};

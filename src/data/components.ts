@@ -1,7 +1,7 @@
 import { ClassNameValue } from "tailwind-merge";
 
 // custom
-import { TypographyVariant } from "@/lib/types";
+import { Avatar, TypographyVariant } from "@/lib/types";
 
 // Variant:HTML Tag mapping for custom typography component
 export const TYPOGRAPHY_PARENT: {
@@ -36,3 +36,22 @@ export const TYPOGRAPHY_CLASS_NAME: {
     small: "text-sm font-medium leading-none",
     muted: "text-sm text-muted-foreground",
   };
+
+export const AVATARS: Avatar[] = [
+  {
+    img: "/avatars/white-boy.png",
+    alt: "White boy pirate kid"
+  },
+  {
+    img: "/avatars/white-girl.png",
+    alt: "White girl pirate kid"
+  },
+  {
+    img: "/avatars/black-boy.png",
+    alt: "Black boy pirate kid"
+  },
+  {
+    img: "/avatars/black-girl.png",
+    alt: "Black girl pirate kid"
+  },
+];
