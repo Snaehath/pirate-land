@@ -13,6 +13,7 @@ const LoginPage = lazy(() => import("./pages/login"));
 const HarborPage = lazy(() => import("./pages/harbor"));
 const ErrorPage = lazy(() => import("./pages/error"));
 const CaptainPage = lazy(() => import("./pages/captain"));
+const HallOfPiratesPage = lazy(() => import("./pages/hall-of-pirates"));
 
 const App: React.FC = () => (
   <div className="flex flex-col p-3 justify-between bg-cover w-screen h-screen bg-[url(./assets/images/map-bg.png)] bg-no-repeat">
@@ -22,6 +23,7 @@ const App: React.FC = () => (
         <Route path="/" element={<LoginPage />} />
         <Route path="/harbor" element={<HarborPage />} />
         <Route path="/captain/:id" element={<CaptainPage />} />
+        <Route path="/hall-of-pirates" element={<HallOfPiratesPage />} />
         <Route path="/*" element={<ErrorPage />} />
       </Routes>
     </Suspense>

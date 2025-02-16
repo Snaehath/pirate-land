@@ -22,3 +22,9 @@ export type Avatar = {
   img: string;
   alt: string;
 };
+
+export type LeaderBoard = {
+  playerID: string;
+  won: number;
+  total: number;
+};
