@@ -10,12 +10,14 @@ import paraIcon from "../../assets/icons/para.svg";
 import paraClient from "@/web3/para-client";
 import { PARA_MODAL_PROPS } from "@/data/app";
 import { useToast } from "@/hooks/use-toast";
+import { useAppContext } from "@/contexts/app";
 
 const ParaButton: React.FC = () => {
   // hooks
   const { t } = useTranslation("login");
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { setLoadingText, setToken, setUserId } = useAppContext();
 
   // states
   const [paraOpen, setParaOpen] = useState<boolean>(false);
@@ -26,22 +28,33 @@ const ParaButton: React.FC = () => {
 
   const handleParaClose = async () => {
     setParaOpen(false);
+    
     try {
+      setLoadingText!("Checking the Captain's Papers... Stand By! 🦜📜");
+      
       // check if session active which means
       // user logged in
       const sessionActive = await paraClient.isSessionActive();
-      if (!sessionActive) return;
+      if (!sessionActive) {
+        setLoadingText!(undefined);
+        return;
+      }
 
       // userId will be present when
       // session is active
       const userId = paraClient.getUserId();
-      if (!userId || userId.length === 0) return;
+      if (!userId || userId.length === 0) {
+        setLoadingText!(undefined);
+        return;
+      }
 
       // try login
       const {data} = await axios.post("/auth/login", { userId });
 
-      localStorage.setItem("pirate-land:userId", userId);
-      localStorage.setItem("pirate-land:token", data.sessionToken);
+      setLoadingText!(undefined);
+
+      setUserId!(userId);
+      setToken!(data.sessionToken);
 
       if (data.isExisting) {
         toast({
@@ -50,6 +63,7 @@ const ParaButton: React.FC = () => {
       }
       navigate(data.isExisting ? "/harbor" : `/captain/${userId}`);
     } catch (error) {
+      setLoadingText!(undefined);
       if (!isAxiosError(error)) return;
 
       const errorResponse = error.response?.data ?? "";

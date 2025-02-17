@@ -49,6 +49,7 @@ export default tseslint.config(
         'error',
         { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
       ],
+      'unicorn/no-useless-undefined': "off"
     },
   },
 )

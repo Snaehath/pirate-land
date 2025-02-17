@@ -6,11 +6,11 @@ const Table = React.forwardRef<
   HTMLTableElement,
   React.HTMLAttributes<HTMLTableElement>
 >(({ className, ...properties }, reference) => (
-  <div className="relative w-full overflow-auto">
+  <div className="animate-fade-in relative w-full overflow-auto">
     <table
       ref={reference}
       className={cn(
-        "w-full caption-bottom border-border border-2 text-sm",
+        "animate-fade-in w-full caption-bottom border-border border-2 text-sm",
         className,
       )}
       {...properties}
@@ -25,7 +25,7 @@ const TableHeader = React.forwardRef<
 >(({ className, ...properties }, reference) => (
   <thead
     ref={reference}
-    className={cn("[&_tr]:border-b", className)}
+    className={cn("animate-fade-in [&_tr]:border-b", className)}
     {...properties}
   />
 ));
@@ -37,7 +37,7 @@ const TableBody = React.forwardRef<
 >(({ className, ...properties }, reference) => (
   <tbody
     ref={reference}
-    className={cn("[&_tr:last-child]:border-0", className)}
+    className={cn("animate-fade-in [&_tr:last-child]:border-0", className)}
     {...properties}
   />
 ));
@@ -50,7 +50,7 @@ const TableFooter = React.forwardRef<
   <tfoot
     ref={reference}
     className={cn(
-      "border-t border-t-border bg-main font-base [&>tr]:last:border-b-0",
+      "animate-fade-in border-t border-t-border bg-main font-base [&>tr]:last:border-b-0",
       className,
     )}
     {...properties}
@@ -65,7 +65,7 @@ const TableRow = React.forwardRef<
   <tr
     ref={reference}
     className={cn(
-      "border-b border-border text-mtext transition-colors bg-main font-base data-[state=selected]:bg-bw data-[state=selected]:text-mtext",
+      "animate-fade-in border-b border-border text-mtext transition-colors bg-main font-base data-[state=selected]:bg-bw data-[state=selected]:text-mtext",
       className,
     )}
     {...properties}
@@ -80,7 +80,7 @@ const TableHead = React.forwardRef<
   <th
     ref={reference}
     className={cn(
-      "h-12 px-4 text-left align-middle font-heading text-mtext [&:has([role=checkbox])]:pr-0",
+      "animate-fade-in h-12 px-4 text-left align-middle font-heading text-mtext [&:has([role=checkbox])]:pr-0",
       className,
     )}
     {...properties}
@@ -95,7 +95,7 @@ const TableCell = React.forwardRef<
   <td
     ref={reference}
     className={cn(
-      "p-4 align-middle font-base [&:has([role=checkbox])]:pr-0",
+      "animate-fade-in p-4 align-middle font-base [&:has([role=checkbox])]:pr-0",
       className,
     )}
     {...properties}
@@ -109,7 +109,7 @@ const TableCaption = React.forwardRef<
 >(({ className, ...properties }, reference) => (
   <caption
     ref={reference}
-    className={cn("mt-4 text-sm text-mtext font-base", className)}
+    className={cn("animate-fade-in mt-4 text-sm text-mtext font-base", className)}
     {...properties}
   />
 ));

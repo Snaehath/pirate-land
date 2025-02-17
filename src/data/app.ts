@@ -8,6 +8,9 @@ export const REST_API = "http://localhost:5000/api";
 export const CELESTIA_BRAND_LINK = "https://celestia.org/";
 export const PARA_BRAND_LINK = "https://www.getpara.com/";
 
+export const TOKEN_KEY = "pirate-land:token";
+export const USER_ID_KEY = "pirate-land:userId";
+
 export const APP_NAME = "Pirate Land";
 
 export const LANGUAGES: Language[] = [
