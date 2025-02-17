@@ -205,8 +205,7 @@ const CarouselPrevious = React.forwardRef<
    
 >(
   (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { className, variant = "outline", size = "icon", ...properties },
+    { className, variant: _variant = "outline", size = "icon", ...properties },
     reference
   ) => {
     const { orientation, scrollPrev, canScrollPrev } = useCarousel();
@@ -241,8 +240,7 @@ const CarouselNext = React.forwardRef<
    
 >(
   (
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    { className, variant = "outline", size = "icon", ...properties },
+    { className, variant: _variant = "outline", size = "icon", ...properties },
     reference
   ) => {
     const { orientation, scrollNext, canScrollNext } = useCarousel();

@@ -45,6 +45,10 @@ export default tseslint.config(
       'react/jsx-indent': ["error", 2],
       'react/jsx-indent-props': ["error", 2],
       'react/jsx-one-expression-per-line': ["error", { "allow": "single-child" }],
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        { "argsIgnorePattern": "^_", "varsIgnorePattern": "^_" }
+      ],
     },
   },
 )

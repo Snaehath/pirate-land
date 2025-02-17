@@ -25,7 +25,7 @@ import Typography from "@/components/typography";
 const CaptaingPage: React.FC = () => {
   // states
   const [api, setApi] = useState<CarouselApi>();
-  const [avatar, setAvatar] = useState<Avatar>(AVATARS[0]);
+  const [_avatar, setAvatar] = useState<Avatar>(AVATARS[0]);
   const [name, setName] = useState<string>("DarkKnight");
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {

@@ -3,6 +3,8 @@ import { OAuthMethod, ParaModalProps } from "@getpara/react-sdk";
 // custom
 import { Language } from "@/lib/types";
 
+export const REST_API = "http://localhost:5000/api";
+
 export const CELESTIA_BRAND_LINK = "https://celestia.org/";
 export const PARA_BRAND_LINK = "https://www.getpara.com/";
 
