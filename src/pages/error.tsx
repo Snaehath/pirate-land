@@ -10,14 +10,21 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useAppContext } from "@/contexts/app";
+import SuspenseLoader from "@/components/suspense-loader";
 
 const ErrorPage: React.FC = () => {
   // hooks
   const navigate = useNavigate();
+  const {authChecking} = useAppContext();
 
   const handleHarbor = () => {
     navigate("/harbor");
   };
+
+  if (authChecking) {
+    return <SuspenseLoader />;
+  }
 
   return (
     <Card className="self-center">

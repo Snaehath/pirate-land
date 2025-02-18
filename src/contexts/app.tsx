@@ -1,4 +1,9 @@
+import axios from "axios";
+
+// custom
 import { TOKEN_KEY, USER_ID_KEY } from "@/data/app";
+import { useToast } from "@/hooks/use-toast";
+import paraClient from "@/web3/para-client";
 import {
   createContext,
   PropsWithChildren,
@@ -15,6 +20,7 @@ const defaultState: AppContextState = {
   loadingText: undefined,
   token: localStorage.getItem(TOKEN_KEY) ?? "",
   userId: localStorage.getItem(USER_ID_KEY) ?? "",
+  authChecking: false,
 };
 
 const AppContext = createContext<AppContextState>(defaultState);
@@ -22,8 +28,12 @@ const AppContext = createContext<AppContextState>(defaultState);
 export const useAppContext = () => useContext(AppContext);
 
 const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
+  // hooks
+  const { toast } = useToast();
+
   // refs
   const audioReference = useRef<HTMLAudioElement | null>(null);
+  const authChecked = useRef<boolean>(false);
 
   // context states
   const [volume, setVolume] = useState<number>(defaultState.volume);
@@ -32,6 +42,9 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   );
   const [token, setToken] = useState<string>(defaultState.token);
   const [userId, setUserId] = useState<string>(defaultState.userId);
+  const [authChecking, setAuthChecking] = useState<boolean>(
+    defaultState.authChecking
+  );
 
   // states
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -57,9 +70,51 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setToken,
       userId,
       setUserId,
+      authChecking,
+      setAuthChecking,
     }),
-    [volume, handleVolumeChange, loadingText, token, userId]
+    [volume, handleVolumeChange, loadingText, token, userId, authChecking]
   );
+
+  // when landing checking if the para
+  // session didn't expire
+  useEffect(() => {
+    if (!token || authChecking || authChecked.current) return;
+    
+    const checkingExpiration = async () => {
+      setAuthChecking(true);
+      try {
+        const isSessionActive = await paraClient.isSessionActive();
+
+        // no problem when session is active
+        if (isSessionActive) {
+          setAuthChecking(false);
+          return;
+        }
+
+        // when session expired, perform log out operations
+        await paraClient.logout();
+        await axios.delete("/auth/logout", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setToken("");
+        setUserId("");
+
+        toast({
+          title: "⚠️ The Wind Has Shifted! ⏳",
+          description:
+            "Arrr! Ye've been adrift too long, and the session be gone! Log in again to continue yer journey!",
+        });
+      } catch {
+        setAuthChecking(false);
+      }
+    };
+    checkingExpiration();
+    
+    authChecked.current = true;
+  }, [token, authChecking, toast]);
 
   // play audio after first user interaction anywhere
   // on the page
@@ -117,4 +172,6 @@ interface AppContextState {
   setToken?: React.Dispatch<React.SetStateAction<string>>;
   userId: string;
   setUserId?: React.Dispatch<React.SetStateAction<string>>;
+  authChecking: boolean;
+  setAuthChecking?: React.Dispatch<React.SetStateAction<boolean>>;
 }

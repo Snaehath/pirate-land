@@ -3,6 +3,7 @@ import { useState } from "react";
 import { ParaModal } from "@getpara/react-sdk";
 import axios, { isAxiosError } from "axios";
 import { useNavigate } from "react-router";
+import { Loader } from "lucide-react";
 
 // custom
 import { Button } from "../ui/button";
@@ -11,18 +12,16 @@ import paraClient from "@/web3/para-client";
 import { PARA_MODAL_PROPS } from "@/data/app";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/contexts/app";
-import { Loader } from "lucide-react";
 
 const ParaButton: React.FC = () => {
   // hooks
   const { t } = useTranslation("login");
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { setLoadingText, setToken, setUserId, loadingText } = useAppContext();
+  const { setLoadingText, setToken, setUserId, loadingText, authChecking, setAuthChecking } = useAppContext();
 
   // states
   const [paraOpen, setParaOpen] = useState<boolean>(false);
-  const [authChecking, setAuthChecking] = useState<boolean>(false);
 
   const handleParaOpen = () => {
     setParaOpen(true);
@@ -33,7 +32,7 @@ const ParaButton: React.FC = () => {
     setParaOpen(false);
     
     if (authChecking) return;
-    setAuthChecking(true);
+    setAuthChecking!(true);
 
     try {
       if (loadingText !== undefined) return;
@@ -42,10 +41,10 @@ const ParaButton: React.FC = () => {
       // user logged in
       const sessionActive = await paraClient.isSessionActive();
       if (!sessionActive) {
-        setAuthChecking(false);
+        setAuthChecking!(false);
         return;
       }
-      setAuthChecking(false);
+      setAuthChecking!(false);
 
       setLoadingText!("Checking the Captain's Papers... Stand By! 🦜📜");
 
@@ -72,7 +71,7 @@ const ParaButton: React.FC = () => {
       }
       navigate(data.isExisting ? "/harbor" : `/captain/${userId}`);
     } catch (error) {
-      setAuthChecking(false);
+      setAuthChecking!(false);
       setLoadingText!(undefined);
       if (!isAxiosError(error)) return;
 

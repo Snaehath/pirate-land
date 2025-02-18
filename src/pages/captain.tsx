@@ -1,4 +1,5 @@
 import { ChangeEvent, useEffect, useState } from "react";
+import { Navigate } from "react-router";
 
 // custom
 import { Button } from "@/components/ui/button";
@@ -22,11 +23,11 @@ import { Avatar } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import Typography from "@/components/typography";
 import { useAppContext } from "@/contexts/app";
-import { Navigate } from "react-router";
+import SuspenseLoader from "@/components/suspense-loader";
 
 const CaptaingPage: React.FC = () => {
   // hooks
-  const { token } = useAppContext();
+  const { token, authChecking } = useAppContext();
 
   // states
   const [api, setApi] = useState<CarouselApi>();
@@ -45,7 +46,11 @@ const CaptaingPage: React.FC = () => {
     });
   }, [api]);
 
-  return token.length > 0 ? (
+  if (authChecking) {
+    return <SuspenseLoader />;
+  }
+
+  return token?.length > 0 ? (
     <Card className="self-center">
       <CardHeader>
         <CardTitle className="text-3xl sm:text-5xl text-center font-pirate-kids">

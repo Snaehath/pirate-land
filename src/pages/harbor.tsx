@@ -5,17 +5,22 @@ import { Navigate, useNavigate } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppContext } from "@/contexts/app";
+import SuspenseLoader from "@/components/suspense-loader";
 
 const HarborPage: React.FC = () => {
   // hooks
-  const { token, userId } = useAppContext();
+  const { token, userId, authChecking } = useAppContext();
   const navigate = useNavigate();
 
   const handleCaptainInfo = () => {
     navigate(`/captain/${userId}`);
   };
 
-  return token.length > 0 ? (
+  if (authChecking) {
+    return <SuspenseLoader />;
+  }
+
+  return token?.length > 0 ? (
     <Card className="self-center">
       <CardContent className="p-6 gap-3 flex flex-col items-center justify-center">
         <p className="font-pirate-kids text-5xl sm:text-7xl">Harbor</p>

@@ -4,12 +4,17 @@ import { Navigate } from "react-router";
 import ParaButton from "@/components/login/para-button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAppContext } from "@/contexts/app";
+import SuspenseLoader from "@/components/suspense-loader";
 
 const LoginPage: React.FC = () => {
   // hooks
-  const { token } = useAppContext();
+  const { token, authChecking } = useAppContext();
 
-  return token.length > 0 ? (
+  if (authChecking) {
+    return <SuspenseLoader />;
+  }
+
+  return token?.length > 0 ? (
     <Navigate to="/harbor" />
   ) : (
     <Card className="self-center">
