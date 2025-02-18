@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router";
-import { Anchor } from "lucide-react";
+import { Anchor, Ship } from "lucide-react";
 
 // custom
 import { Button } from "@/components/ui/button";
@@ -16,10 +16,10 @@ import SuspenseLoader from "@/components/suspense-loader";
 const ErrorPage: React.FC = () => {
   // hooks
   const navigate = useNavigate();
-  const {authChecking} = useAppContext();
+  const { authChecking, token } = useAppContext();
 
   const handleHarbor = () => {
-    navigate("/harbor");
+    navigate(token?.length > 0 ? "/harbor" : "/");
   };
 
   if (authChecking) {
@@ -40,8 +40,10 @@ const ErrorPage: React.FC = () => {
           variant="neutral"
           onClick={handleHarbor}
         >
-          <Anchor />
-          Return to Harbor
+          {token?.length > 0 ? <Anchor /> : <Ship />}
+          {token?.length > 0
+            ? "Back to Safe Waters! "
+            : "Log In & Board the Ship!"}
         </Button>
       </CardFooter>
     </Card>

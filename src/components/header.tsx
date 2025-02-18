@@ -9,12 +9,14 @@ import VolumeController from "./volume-controller";
 import LogOutButton from "./log-out";
 import { Button } from "./ui/button";
 import ToolTip from "./tooltip";
+import { useAppContext } from "@/contexts/app";
 
 const Header: React.FC = () => {
   // hooks
   const isMobile = useIsMobile();
   const location = useLocation();
   const navigate = useNavigate();
+  const { token } = useAppContext();
 
   const handleGoBack = () => {
     navigate("/harbor");
@@ -27,7 +29,7 @@ const Header: React.FC = () => {
       ) : (
         <Card className="sm:self-start">
           <CardContent className="px-2 flex gap-3 py-1 items-start justify-center">
-            {location.pathname !== "/harbor" && (
+            {token?.length > 0 && location.pathname !== "/harbor" && (
               <ToolTip content="Back to Harbor">
                 <Button
                   size="icon"
@@ -46,7 +48,7 @@ const Header: React.FC = () => {
           <CardContent className="p-3 gap-3 flex items-center">
             <VolumeController />
             <LanguageSelector />
-            <LogOutButton />
+            {token?.length > 0 && <LogOutButton />}
           </CardContent>
         </Card>
       ) : (
