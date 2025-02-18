@@ -11,34 +11,43 @@ import paraClient from "@/web3/para-client";
 import { PARA_MODAL_PROPS } from "@/data/app";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/contexts/app";
+import { Loader } from "lucide-react";
 
 const ParaButton: React.FC = () => {
   // hooks
   const { t } = useTranslation("login");
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { setLoadingText, setToken, setUserId } = useAppContext();
+  const { setLoadingText, setToken, setUserId, loadingText } = useAppContext();
 
   // states
   const [paraOpen, setParaOpen] = useState<boolean>(false);
+  const [authChecking, setAuthChecking] = useState<boolean>(false);
 
   const handleParaOpen = () => {
     setParaOpen(true);
   };
 
   const handleParaClose = async () => {
+    if (!paraOpen) return;
     setParaOpen(false);
     
+    if (authChecking) return;
+    setAuthChecking(true);
+
     try {
-      setLoadingText!("Checking the Captain's Papers... Stand By! 🦜📜");
-      
+      if (loadingText !== undefined) return;
+
       // check if session active which means
       // user logged in
       const sessionActive = await paraClient.isSessionActive();
       if (!sessionActive) {
-        setLoadingText!(undefined);
+        setAuthChecking(false);
         return;
       }
+      setAuthChecking(false);
+
+      setLoadingText!("Checking the Captain's Papers... Stand By! 🦜📜");
 
       // userId will be present when
       // session is active
@@ -49,7 +58,7 @@ const ParaButton: React.FC = () => {
       }
 
       // try login
-      const {data} = await axios.post("/auth/login", { userId });
+      const { data } = await axios.post("/auth/login", { userId });
 
       setLoadingText!(undefined);
 
@@ -58,11 +67,12 @@ const ParaButton: React.FC = () => {
 
       if (data.isExisting) {
         toast({
-          title: "🦜 Ahoy! Welcome Aboard, Captain! ☠️⚓"
+          title: "🦜 Ahoy! Welcome Aboard, Captain! ☠️⚓",
         });
       }
       navigate(data.isExisting ? "/harbor" : `/captain/${userId}`);
     } catch (error) {
+      setAuthChecking(false);
       setLoadingText!(undefined);
       if (!isAxiosError(error)) return;
 
@@ -72,7 +82,8 @@ const ParaButton: React.FC = () => {
       if (errorResponse === "Already logged in") {
         toast({
           title: "🏴‍☠️ Ahoy, Matey! Ye Be Logged in Elsewhere!",
-          description: "Ye've already set sail from another ship (tab or device)! Log out from there before embarkin' again.",
+          description:
+            "Ye've already set sail from another ship (tab or device)! Log out from there before embarkin' again.",
           variant: "destructive",
         });
       }
@@ -85,11 +96,15 @@ const ParaButton: React.FC = () => {
         variant="neutral"
         onClick={handleParaOpen}
       >
-        <img
-          src={paraIcon}
-          alt="Para"
-          className="size-4 bg-transparent"
-        />
+        {authChecking ? (
+          <Loader className="animate-spin" />
+        ) : (
+          <img
+            src={paraIcon}
+            alt="Para"
+            className="size-4 bg-transparent"
+          />
+        )}
         {t("connect-btn")}
       </Button>
       <ParaModal

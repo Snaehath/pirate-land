@@ -21,8 +21,13 @@ import { AVATARS } from "@/data/components";
 import { Avatar } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import Typography from "@/components/typography";
+import { useAppContext } from "@/contexts/app";
+import { Navigate } from "react-router";
 
 const CaptaingPage: React.FC = () => {
+  // hooks
+  const { token } = useAppContext();
+
   // states
   const [api, setApi] = useState<CarouselApi>();
   const [_avatar, setAvatar] = useState<Avatar>(AVATARS[0]);
@@ -40,7 +45,7 @@ const CaptaingPage: React.FC = () => {
     });
   }, [api]);
 
-  return (
+  return token.length > 0 ? (
     <Card className="self-center">
       <CardHeader>
         <CardTitle className="text-3xl sm:text-5xl text-center font-pirate-kids">
@@ -86,11 +91,11 @@ const CaptaingPage: React.FC = () => {
       </CardContent>
       <CardFooter className="flex items-center gap-3 justify-end">
         <Button>Abandon Changes</Button>
-        <Button variant="neutral">
-          Hoist
-        </Button>
+        <Button variant="neutral">Hoist</Button>
       </CardFooter>
     </Card>
+  ) : (
+    <Navigate to="/" />
   );
 };
 

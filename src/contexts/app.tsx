@@ -88,28 +88,8 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // storing token and userId to localstorage
   // when they change
   useEffect(() => {
-    // get them from localstorage
-    const lsToken = localStorage.getItem(TOKEN_KEY);
-    const lsUserId = localStorage.getItem(userId);
-
-    // validating & storing token
-    if (token !== lsToken) {
-      if (token.length === 0) {
-        localStorage.removeItem(TOKEN_KEY);
-      } else {
-        localStorage.setItem(TOKEN_KEY, token);
-      }
-    }
-
-    // validating & storing userId
-    if (userId !== lsUserId) {
-      if (userId.length === 0) {
-        localStorage.removeItem(USER_ID_KEY);
-      } else {
-        localStorage.setItem(USER_ID_KEY, userId);
-      }
-    }
-
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USER_ID_KEY, userId);
   }, [token, userId]);
 
   return (
