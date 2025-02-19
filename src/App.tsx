@@ -1,60 +1,34 @@
 /* eslint-disable unicorn/filename-case */
 
-//custom
-import { Button } from "./components/ui/button";
-import {
-  AlertDialogTrigger,
-  AlertDialog,
-  AlertDialogContent,
-  AlertDialogHeader,
-  AlertDialogDescription,
-} from "./components/ui/alert-dialog";
+import { lazy, Suspense } from "react";
+import { Route, Routes } from "react-router";
 
-import { cn } from "./lib/utils";
-import { motion } from "framer-motion";
-import { ShipWheel } from "lucide-react";
+// custom
+import Header from "./components/header";
+import Footer from "./components/footer";
+import SuspenseLoader from "./components/suspense-loader";
 
-const Loader = () => {
-  return (
-    <div className="flex justify-center items-center flex-col gap-3">
-      <motion.div
-        animate={{ rotate: 360 }}
-        transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-      >
-        <ShipWheel className="w-20 h-20" />
-      </motion.div>
-      <p className="text-lg font-semibold font-pirate-kids">
-        Loading the High Seas...
-      </p>
-    </div>
-  );
-};
+// pages
+const LoginPage = lazy(() => import("./pages/login"));
+const HarborPage = lazy(() => import("./pages/harbor"));
+const ErrorPage = lazy(() => import("./pages/error"));
+const CaptainPage = lazy(() => import("./pages/captain"));
+const HallOfPiratesPage = lazy(() => import("./pages/hall-of-pirates"));
 
-const App: React.FC = () => {
-  return (
-    <div
-      className={cn(
-        "bg-cover w-screen h-screen bg-[url(./assets/images/map-bg.png)]",
-        "bg-no-repeat flex items-center justify-center"
-      )}
-    >
-      <div className="w-64 h-20 relative bg-orange-300 flex flex-col justify-center">
-        <h1 className="font-pirate-kids text-3xl ml-14">Pirate Land</h1>
-        <AlertDialog>
-          <AlertDialogTrigger asChild>
-            <Button>Play</Button>
-          </AlertDialogTrigger>
-          <AlertDialogContent>
-            <AlertDialogHeader>
-              <AlertDialogDescription>
-                <Loader />
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-          </AlertDialogContent>
-        </AlertDialog>
-      </div>
-    </div>
-  );
-};
+const App: React.FC = () => (
+  <div className="flex flex-col p-3 justify-between bg-cover w-screen h-screen bg-[url(./assets/images/map-bg.png)] bg-no-repeat">
+    <Header />
+    <Suspense fallback={<SuspenseLoader />}>
+      <Routes>
+        <Route path="/" element={<LoginPage />} />
+        <Route path="/harbor" element={<HarborPage />} />
+        <Route path="/captain/:id" element={<CaptainPage />} />
+        <Route path="/hall-of-pirates" element={<HallOfPiratesPage />} />
+        <Route path="/*" element={<ErrorPage />} />
+      </Routes>
+    </Suspense>
+    <Footer />
+  </div>
+);
 
 export default App;
