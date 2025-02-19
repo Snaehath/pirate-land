@@ -11,6 +11,8 @@ export const PARA_BRAND_LINK = "https://www.getpara.com/";
 export const TOKEN_KEY = "pirate-land:token";
 export const USER_ID_KEY = "pirate-land:userId";
 
+export const HALL_OF_PIRATES_PAGE_SIZE = 3;
+
 export const APP_NAME = "Pirate Land";
 
 export const LANGUAGES: Language[] = [

@@ -21,6 +21,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { HALL_OF_PIRATES_PAGE_SIZE } from "@/data/app";
+import { cn } from "@/lib/utils";
 
 const leaderBoard: LeaderBoard[] = [
   { playerID: "player1", won: 10, total: 15 },
@@ -33,17 +35,23 @@ const leaderBoard: LeaderBoard[] = [
 ];
 
 const HallOfPiratesPage: React.FC = () => {
-  // state
+  // states
   const [startIndex, setStartIndex] = useState<number>(0);
 
-  const itemsPerView = 3;
-
-  const visibleData = leaderBoard.slice(startIndex, startIndex + itemsPerView);
-
+  // local variables
+  const visibleData = leaderBoard.slice(startIndex, startIndex + HALL_OF_PIRATES_PAGE_SIZE);
   const randomIcon = useMemo(
     () => LEADERBOARD_ICONS[Math.floor(Math.random() * 4)].img,
     []
   );
+
+  const handlePrevious = () => {
+    setStartIndex((previousState) => previousState - HALL_OF_PIRATES_PAGE_SIZE);
+  };
+
+  const handleNext = () => {
+    setStartIndex((previousState) => previousState + HALL_OF_PIRATES_PAGE_SIZE);
+  };
 
   return (
     <Card className="self-center font-pirate-kids">
@@ -67,7 +75,10 @@ const HallOfPiratesPage: React.FC = () => {
           <TableBody>
             {visibleData.map((player, index) => (
               <TableRow key={player.playerID}>
-                <TableCell>#{index + startIndex + 1}</TableCell>
+                <TableCell>
+                  #
+                  {index + startIndex + 1}
+                </TableCell>
                 <TableCell className="flex items-center cursor-pointer">
                   <Link to={`/captain/${player.playerID}`}>
                     <Button
@@ -93,20 +104,16 @@ const HallOfPiratesPage: React.FC = () => {
       <CardFooter className="flex justify-center gap-3">
         <Button
           size={"sm"}
-          onClick={() => {
-            setStartIndex((previousState) => previousState - itemsPerView);
-          }}
-          disabled={startIndex === 0}
+          onClick={handlePrevious}
+          className={cn(startIndex === 0 && "hidden")}
         >
           <ArrowBigLeft />
           Prev
         </Button>
         <Button
           size={"sm"}
-          onClick={() => {
-            setStartIndex((previousState) => previousState + itemsPerView);
-          }}
-          disabled={startIndex + itemsPerView >= leaderBoard.length}
+          onClick={handleNext}
+          className={cn(startIndex + HALL_OF_PIRATES_PAGE_SIZE >= leaderBoard.length && "hidden")}
         >
           Next
           <ArrowBigRight />

@@ -21,11 +21,26 @@ const App: React.FC = () => (
     <Header />
     <Suspense fallback={<SuspenseLoader />}>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
-        <Route path="/harbor" element={<HarborPage />} />
-        <Route path="/captain/:id" element={<CaptainPage />} />
-        <Route path="/hall-of-pirates" element={<HallOfPiratesPage />} />
-        <Route path="/*" element={<ErrorPage />} />
+        <Route
+          path="/"
+          element={<LoginPage />}
+        />
+        <Route
+          path="/harbor"
+          element={<HarborPage />}
+        />
+        <Route
+          path="/captain/:id"
+          element={<CaptainPage />}
+        />
+        <Route
+          path="/hall-of-pirates"
+          element={<HallOfPiratesPage />}
+        />
+        <Route
+          path="/*"
+          element={<ErrorPage />}
+        />
       </Routes>
     </Suspense>
     <Footer />

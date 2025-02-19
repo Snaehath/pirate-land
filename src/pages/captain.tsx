@@ -22,7 +22,7 @@ import SuspenseLoader from "@/components/suspense-loader";
 import { Skeleton } from "@/components/ui/skeleton";
 import CaptainAvatar from "@/components/captain/avatar";
 
-const CaptaingPage: React.FC = () => {
+const CaptainPage: React.FC = () => {
   // hooks
   const { id } = useParams();
   const { token, authChecking, userId } = useAppContext();

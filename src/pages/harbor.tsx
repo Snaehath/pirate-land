@@ -16,6 +16,10 @@ const HarborPage: React.FC = () => {
     navigate(`/captain/${userId}`);
   };
 
+  const handleHallOfPirates = () => {
+    navigate("/hall-of-pirates");
+  };
+
   if (authChecking) {
     return <SuspenseLoader />;
   }
@@ -32,7 +36,10 @@ const HarborPage: React.FC = () => {
           <Swords />
           Raid Island
         </Button>
-        <Button className="font-pirate-kids">
+        <Button
+          onClick={handleHallOfPirates}
+          className="font-pirate-kids"
+        >
           <Scroll />
           Hall of Pirates
         </Button>
