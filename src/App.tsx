@@ -35,7 +35,7 @@ const App: React.FC = () => {
     <div
       className={cn(
         "bg-cover w-screen h-screen bg-[url(./assets/images/map-bg.png)]",
-        `bg-no-repeat flex items-center justify-center`
+        "bg-no-repeat flex items-center justify-center"
       )}
     >
       <div className="w-64 h-20 relative bg-orange-300 flex flex-col justify-center">
