@@ -22,7 +22,7 @@ import { Avatar } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import Typography from "@/components/typography";
 
-const CaptaingPage: React.FC = () => {
+const CaptainPage: React.FC = () => {
   // states
   const [api, setApi] = useState<CarouselApi>();
   const [avatar, setAvatar] = useState<Avatar>(AVATARS[0]);
@@ -52,27 +52,16 @@ const CaptaingPage: React.FC = () => {
           {/* name */}
           <div>
             <Typography className="font-pirate-kids">Name</Typography>
-            <Input
-              value={name}
-              onChange={handleNameChange}
-            />
+            <Input value={name} onChange={handleNameChange} />
           </div>
           {/* avatar */}
           <div className="flex flex-col">
             <Typography className="font-pirate-kids">Avatar</Typography>
-            <Carousel
-              setApi={setApi}
-              opts={{ loop: true }}
-              className="w-56"
-            >
+            <Carousel setApi={setApi} opts={{ loop: true }} className="w-56">
               <CarouselContent>
                 {AVATARS.map((img) => (
                   <CarouselItem key={img.img}>
-                    <img
-                      className="w-56"
-                      src={img.img}
-                      alt={img.alt}
-                    />
+                    <img className="w-56" src={img.img} alt={img.alt} />
                   </CarouselItem>
                 ))}
               </CarouselContent>
@@ -86,12 +75,10 @@ const CaptaingPage: React.FC = () => {
       </CardContent>
       <CardFooter className="flex items-center gap-3 justify-end">
         <Button>Abandon Changes</Button>
-        <Button variant="neutral">
-          Hoist
-        </Button>
+        <Button variant="neutral">Hoist</Button>
       </CardFooter>
     </Card>
   );
 };
 
-export default CaptaingPage;
+export default CaptainPage;

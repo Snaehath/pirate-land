@@ -1,42 +1,59 @@
 import { Link } from "react-router";
+import { useMemo, useState } from "react";
+import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+
 // custom
 import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { LeaderBoard } from "@/lib/types";
 import { LEADERBOARD_ICONS } from "@/data/components";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Anchor, ArrowBigLeft, ArrowBigRight } from "lucide-react";
-import { useMemo } from "react";
 
 const leaderBoard: LeaderBoard[] = [
   { playerID: "player1", won: 10, total: 15 },
   { playerID: "player2", won: 7, total: 15 },
   { playerID: "player3", won: 12, total: 15 },
+  { playerID: "player4", won: 11, total: 15 },
+  { playerID: "player5", won: 6, total: 15 },
+  { playerID: "player6", won: 14, total: 15 },
+  { playerID: "player7", won: 14, total: 15 },
 ];
 
 const HallOfPiratesPage: React.FC = () => {
+  // state
+  const [startIndex, setStartIndex] = useState<number>(0);
+
+  const itemsPerView = 3;
+
+  const visibleData = leaderBoard.slice(startIndex, startIndex + itemsPerView);
+
   const randomIcon = useMemo(
     () => LEADERBOARD_ICONS[Math.floor(Math.random() * 4)].img,
     []
   );
 
   return (
-    <Card className="self-center">
+    <Card className="self-center font-pirate-kids">
       <CardHeader>
         <CardTitle className="text-center font-pirate-kids">
           Hall Of Pirates
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <Table className="font-pirate-kids">
+        <Table>
           <TableHeader>
             <TableRow>
               <TableHead>Rank</TableHead>
@@ -48,14 +65,14 @@ const HallOfPiratesPage: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {leaderBoard.map((player, idx) => (
+            {visibleData.map((player, index) => (
               <TableRow key={player.playerID}>
-                <TableCell>#{idx + 1}</TableCell>
+                <TableCell>#{index + startIndex + 1}</TableCell>
                 <TableCell className="flex items-center cursor-pointer">
                   <Link to={`/captain/${player.playerID}`}>
                     <Button
                       variant={"noShadow"}
-                      className="border-none transition-transform transform hover:scale-110"
+                      className="border-none transition-transform transform hover:scale-110 underline underline-offset-4"
                     >
                       <img
                         src={randomIcon}
@@ -63,7 +80,6 @@ const HallOfPiratesPage: React.FC = () => {
                         className="w-20"
                       />
                       {player.playerID}
-                      <Anchor className=" animate-pulse" />
                     </Button>
                   </Link>
                 </TableCell>
@@ -72,24 +88,30 @@ const HallOfPiratesPage: React.FC = () => {
               </TableRow>
             ))}
           </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TableCell colSpan={2}>
-                <Button>
-                  <ArrowBigLeft />
-                  Prev
-                </Button>
-              </TableCell>
-              <TableCell colSpan={2} className="text-right">
-                <Button>
-                  Next
-                  <ArrowBigRight />
-                </Button>
-              </TableCell>
-            </TableRow>
-          </TableFooter>
         </Table>
       </CardContent>
+      <CardFooter className="flex justify-center gap-3">
+        <Button
+          size={"sm"}
+          onClick={() => {
+            setStartIndex((previousState) => previousState - itemsPerView);
+          }}
+          disabled={startIndex === 0}
+        >
+          <ArrowBigLeft />
+          Prev
+        </Button>
+        <Button
+          size={"sm"}
+          onClick={() => {
+            setStartIndex((previousState) => previousState + itemsPerView);
+          }}
+          disabled={startIndex + itemsPerView >= leaderBoard.length}
+        >
+          Next
+          <ArrowBigRight />
+        </Button>
+      </CardFooter>
     </Card>
   );
 };
