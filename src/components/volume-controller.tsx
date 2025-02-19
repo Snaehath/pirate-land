@@ -25,7 +25,10 @@ const VolumeController: React.FC = () => {
 
   return (
     <Popover>
-      <ToolTip content="Music">
+      <ToolTip
+        content="Music"
+        hideOnMobile
+      >
         <PopoverTrigger asChild>
           <Button size="icon">
             <VolumeIcon />

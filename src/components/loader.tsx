@@ -18,7 +18,7 @@ const Loader: React.FC = () => {
         </AlertDialogHeader>
         <ShipWheel className="size-20 animate-spin fill-white" />
         {loadingText && (
-          <Typography className="animate-pulse font-pirate-kids">{loadingText}</Typography>
+          <Typography className="text-center animate-pulse font-pirate-kids">{loadingText}</Typography>
         )}
       </AlertDialogContent>
     </AlertDialog>

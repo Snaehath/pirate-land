@@ -48,7 +48,10 @@ const LogOutButton: React.FC = () => {
   };
 
   return location?.pathname === "/" ? undefined : (
-    <ToolTip content="Set Sail Away">
+    <ToolTip
+      content="Set Sail Away"
+      hideOnMobile
+    >
       <Button
         size="icon"
         onClick={handleLogout}

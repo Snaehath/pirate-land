@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router";
-import { ArrowBigLeft } from "lucide-react";
+import { ArrowBigLeft, Settings } from "lucide-react";
 
 // custom
 import useIsMobile from "@/hooks/use-mobile";
@@ -10,6 +10,7 @@ import LogOutButton from "./log-out";
 import { Button } from "./ui/button";
 import ToolTip from "./tooltip";
 import { useAppContext } from "@/contexts/app";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 const Header: React.FC = () => {
   // hooks
@@ -28,7 +29,7 @@ const Header: React.FC = () => {
         <div />
       ) : (
         <Card className="sm:self-start">
-          <CardContent className="px-2 flex gap-3 py-1 items-start justify-center">
+          <CardContent className="px-2 flex gap-3 py-2 sm:py-1 items-center sm:items-start justify-center">
             {token?.length > 0 && location.pathname !== "/harbor" && (
               <ToolTip content="Back to Harbor">
                 <Button
@@ -44,13 +45,18 @@ const Header: React.FC = () => {
         </Card>
       )}
       {isMobile ? (
-        <Card>
-          <CardContent className="p-3 gap-3 flex items-center">
+        <Popover>
+          <PopoverTrigger asChild>
+            <Button size="icon">
+              <Settings />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent className="w-fit flex flex-col gap-3">
             <VolumeController />
             <LanguageSelector />
             {token?.length > 0 && <LogOutButton />}
-          </CardContent>
-        </Card>
+          </PopoverContent>
+        </Popover>
       ) : (
         <div />
       )}

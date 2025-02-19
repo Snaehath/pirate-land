@@ -29,7 +29,10 @@ const LanguageSelector: React.FC = () => {
 
   return (
     <DropdownMenu>
-      <ToolTip content="Language">
+      <ToolTip
+        content="Language"
+        hideOnMobile
+      >
         <DropdownMenuTrigger asChild>
           <Button size="icon">
             <Languages />

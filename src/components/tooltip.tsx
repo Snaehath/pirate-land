@@ -16,20 +16,24 @@ const ToolTip: React.FC<ToolTipProps> = ({
   className,
   side,
   align,
-}) => (
-  <TooltipProvider>
-    <Tooltip delayDuration={300}>
-      <TooltipTrigger asChild>{children}</TooltipTrigger>
-      <TooltipContent
-        align={align}
-        side={side}
-        className={cn("text-justify font-pirate-kids", className)}
-      >
-        {content}
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-);
+  hideOnMobile,
+}) =>
+  hideOnMobile ? (
+    children
+  ) : (
+    <TooltipProvider>
+      <Tooltip delayDuration={300}>
+        <TooltipTrigger asChild>{children}</TooltipTrigger>
+        <TooltipContent
+          align={align}
+          side={side}
+          className={cn("text-justify font-pirate-kids", className)}
+        >
+          {content}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
 
 export default ToolTip;
 
@@ -39,4 +43,5 @@ interface ToolTipProps extends PropsWithChildren {
   className?: ClassNameValue;
   side?: "bottom" | "top" | "right" | "left";
   align?: "center" | "end" | "start";
+  hideOnMobile?: boolean;
 }
