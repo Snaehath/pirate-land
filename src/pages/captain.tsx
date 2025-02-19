@@ -40,6 +40,7 @@ const CaptaingPage: React.FC = () => {
   // local variables
   const avatarObject = AVATARS[avatar];
   const isOwner = id === userId;
+  const isUpdated = isOwner && (avatar !== userData?.avatar || name !== userData.name);
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!isOwner) return;
@@ -162,7 +163,7 @@ const CaptaingPage: React.FC = () => {
           </div>
         </div>
       </CardContent>
-      {!fetching && isOwner && (
+      {!fetching && isUpdated && (
         <CardFooter className="flex items-center gap-3 justify-end">
           <Button
             disabled={updating}
