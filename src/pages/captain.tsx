@@ -187,4 +187,4 @@ const CaptaingPage: React.FC = () => {
   );
 };
 
-export default CaptaingPage;
+export default CaptainPage;
