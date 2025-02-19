@@ -24,19 +24,22 @@ const HarborPage: React.FC = () => {
     <Card className="self-center">
       <CardContent className="p-6 gap-3 flex flex-col items-center justify-center">
         <p className="font-pirate-kids text-5xl sm:text-7xl">Harbor</p>
-        <Button>
+        <Button className="font-pirate-kids">
           <TreePalm />
           Build Your Island
         </Button>
-        <Button>
+        <Button className="font-pirate-kids">
           <Swords />
           Raid Island
         </Button>
-        <Button>
+        <Button className="font-pirate-kids">
           <Scroll />
           Hall of Pirates
         </Button>
-        <Button onClick={handleCaptainInfo}>
+        <Button
+          onClick={handleCaptainInfo}
+          className="font-pirate-kids"
+        >
           <VenetianMask />
           Captain Info
         </Button>

@@ -67,6 +67,7 @@ const CaptaingPage: React.FC = () => {
         }
       );
       setUpdating(false);
+      setUserData({ name, avatar, id });
     } catch {
       setUpdating(false);
     }
@@ -166,6 +167,7 @@ const CaptaingPage: React.FC = () => {
           <Button
             disabled={updating}
             onClick={discardChanges}
+            className="font-pirate-kids"
           >
             Abandon Changes
           </Button>
@@ -173,6 +175,7 @@ const CaptaingPage: React.FC = () => {
             disabled={updating}
             variant="neutral"
             onClick={updateChanges}
+            className="font-pirate-kids"
           >
             {updating && <Loader className="animate-spin" />}
             Hoist

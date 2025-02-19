@@ -23,7 +23,7 @@ const ToolTip: React.FC<ToolTipProps> = ({
       <TooltipContent
         align={align}
         side={side}
-        className={cn("text-justify", className)}
+        className={cn("text-justify font-pirate-kids", className)}
       >
         {content}
       </TooltipContent>
