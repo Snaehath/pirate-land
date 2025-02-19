@@ -22,8 +22,8 @@ const CaptainAvatar: React.FC<CaptainAvatarProperties> = ({
   };
 
   return (
-    <div className="flex flex-col size-56 relative">
-      <div className="absolute w-full justify-between flex z-10 items-center">
+    <div className="flex flex-col size-48 sm:size-56 relative">
+      <div className="absolute w-full justify-between flex z-10 items-center top-[42%]">
         <Button
           size="icon"
           onClick={handlePrevious}
@@ -39,7 +39,7 @@ const CaptainAvatar: React.FC<CaptainAvatarProperties> = ({
       </div>
       <img
         key={value}
-        className="size-56 animate-fade-in"
+        className="size-48 sm:size-56 animate-fade-in"
         src={avatar.img}
         alt={avatar.alt}
       />
