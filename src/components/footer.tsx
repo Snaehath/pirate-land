@@ -1,5 +1,5 @@
 import LanguageSelector from "./language-selector";
-import Branding from "./login/branding";
+import Branding from "./branding";
 import { Card, CardContent } from "./ui/card";
 import VolumeController from "./volume-controller";
 import LogOutButton from "./log-out";
