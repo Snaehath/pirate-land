@@ -45,7 +45,9 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
     const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       const audio = new Audio("/audio/tree-hit.mp3");
       audio.play();
-      onClick!(event);
+      if (onClick) {
+        onClick(event);
+      }
     };
     
     return (

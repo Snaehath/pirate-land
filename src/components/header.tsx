@@ -39,7 +39,7 @@ const Header: React.FC = () => {
                 </Button>
               </ToolTip>
             )}
-            <p className="font-pirate-kids text-2xl sm:text-5xl">Pirate Land</p>
+            <p className="font-pirate-kids text-2xl sm:text-5xl animate-fade-in">Pirate Land</p>
           </CardContent>
         </Card>
       )}

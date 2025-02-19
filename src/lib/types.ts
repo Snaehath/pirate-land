@@ -5,6 +5,12 @@ export type Language = {
   code: LanguageCode;
 };
 
+export type User = {
+  id: string;
+  name: string;
+  avatar: number;
+};
+
 export type TypographyVariant =
   | "h1"
   | "h2"

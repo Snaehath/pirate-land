@@ -101,6 +101,7 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
         });
         setToken("");
         setUserId("");
+        setAuthChecking(false);
 
         toast({
           title: "⚠️ The Wind Has Shifted! ⏳",

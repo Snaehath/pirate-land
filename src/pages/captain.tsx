@@ -1,106 +1,185 @@
 import { ChangeEvent, useEffect, useState } from "react";
-import { Navigate } from "react-router";
+import { Navigate, useParams } from "react-router";
+import axios from "axios";
+import { Loader } from "lucide-react";
 
 // custom
 import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Carousel,
-  CarouselApi,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 import { AVATARS } from "@/data/components";
-import { Avatar } from "@/lib/types";
+import { User } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import Typography from "@/components/typography";
 import { useAppContext } from "@/contexts/app";
 import SuspenseLoader from "@/components/suspense-loader";
+import { Skeleton } from "@/components/ui/skeleton";
+import CaptainAvatar from "@/components/captain/avatar";
 
 const CaptaingPage: React.FC = () => {
   // hooks
-  const { token, authChecking } = useAppContext();
+  const { id } = useParams();
+  const { token, authChecking, userId } = useAppContext();
 
   // states
-  const [api, setApi] = useState<CarouselApi>();
-  const [_avatar, setAvatar] = useState<Avatar>(AVATARS[0]);
-  const [name, setName] = useState<string>("DarkKnight");
+  const [avatar, setAvatar] = useState<number>(0);
+  const [name, setName] = useState<string>("");
+
+  const [fetching, setFetching] = useState<boolean>(false);
+  const [userData, setUserData] = useState<User>();
+  const [userNotFound, setUserNotFound] = useState<boolean>(false);
+
+  const [updating, setUpdating] = useState<boolean>(false);
+
+  // local variables
+  const avatarObject = AVATARS[avatar];
+  const isOwner = id === userId;
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!isOwner) return;
     setName(event.target.value);
   };
 
+  const discardChanges = () => {
+    if (fetching || !isOwner || !userData) return;
+    setName(userData.name);
+    setAvatar(userData.avatar);
+  };
+
+  const updateChanges = async () => {
+    if (!isOwner) return;
+
+    try {
+      setUpdating(true);
+      await axios.put(
+        `/users/${id}`,
+        { name, avatar },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setUpdating(false);
+    } catch {
+      setUpdating(false);
+    }
+  };
+
+  // fetch user data
   useEffect(() => {
-    if (!api) return;
-    setAvatar(AVATARS[api.selectedScrollSnap()]);
-    api.on("select", () => {
-      setAvatar(AVATARS[api.selectedScrollSnap()]);
-    });
-  }, [api]);
+    if (!id || !token) return;
+    const fetchUser = async () => {
+      try {
+        setFetching(true);
+        const { data } = await axios.get<User>(`/users/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserData(data);
+        setName(data.name);
+        setAvatar(data.avatar);
+        setFetching(false);
+        setUserNotFound(false);
+      } catch {
+        setUserNotFound(true);
+        setFetching(false);
+      }
+    };
+    fetchUser();
+  }, [id, token]);
 
   if (authChecking) {
     return <SuspenseLoader />;
   }
 
-  return token?.length > 0 ? (
+  if (!(token?.length > 0)) {
+    return <Navigate to="/" />;
+  }
+
+  if (userNotFound) {
+    return (
+      <Card className="self-center">
+        <CardHeader>
+          <CardTitle>⚓ This Captain Be a Myth!</CardTitle>
+          <CardDescription>
+            Arrr! We searched the seven seas, but no captain by that id be
+            found! Check yer map and try again!
+          </CardDescription>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  return (
     <Card className="self-center">
       <CardHeader>
         <CardTitle className="text-3xl sm:text-5xl text-center font-pirate-kids">
-          Profile
+          Captain Profile
         </CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-3">
           {/* name */}
-          <div>
+          <div className="flex flex-col items-center gap-1">
             <Typography className="font-pirate-kids">Name</Typography>
-            <Input
-              value={name}
-              onChange={handleNameChange}
-            />
+            {fetching ? (
+              <Skeleton className="h-8 w-full" />
+            ) : (
+              <Input
+                value={name}
+                className="text-center"
+                onChange={handleNameChange}
+                readOnly={!isOwner}
+              />
+            )}
           </div>
           {/* avatar */}
-          <div className="flex flex-col">
+          <div className="flex flex-col self-center items-center gap-1">
             <Typography className="font-pirate-kids">Avatar</Typography>
-            <Carousel
-              setApi={setApi}
-              opts={{ loop: true }}
-              className="w-56"
-            >
-              <CarouselContent>
-                {AVATARS.map((img) => (
-                  <CarouselItem key={img.img}>
-                    <img
-                      className="w-56"
-                      src={img.img}
-                      alt={img.alt}
-                    />
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-              <div className="flex gap-0.5 absolute -bottom-5 right-0">
-                <CarouselPrevious className="static" />
-                <CarouselNext className="static" />
-              </div>
-            </Carousel>
+            {fetching ? (
+              <Skeleton className="size-56" />
+            ) : (isOwner ? (
+              <CaptainAvatar
+                value={avatar}
+                setValue={setAvatar}
+              />
+            ) : (
+              <img
+                className="size-56"
+                src={avatarObject.img}
+                alt={avatarObject.alt}
+              />
+            ))}
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex items-center gap-3 justify-end">
-        <Button>Abandon Changes</Button>
-        <Button variant="neutral">Hoist</Button>
-      </CardFooter>
+      {!fetching && isOwner && (
+        <CardFooter className="flex items-center gap-3 justify-end">
+          <Button
+            disabled={updating}
+            onClick={discardChanges}
+          >
+            Abandon Changes
+          </Button>
+          <Button
+            disabled={updating}
+            variant="neutral"
+            onClick={updateChanges}
+          >
+            {updating && <Loader className="animate-spin" />}
+            Hoist
+          </Button>
+        </CardFooter>
+      )}
     </Card>
-  ) : (
-    <Navigate to="/" />
   );
 };
 
