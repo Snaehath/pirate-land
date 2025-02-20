@@ -22,7 +22,6 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HALL_OF_PIRATES_PAGE_SIZE } from "@/data/app";
-import { cn } from "@/lib/utils";
 
 const leaderBoard: LeaderBoard[] = [
   { playerID: "player1", won: 10, total: 15 },
@@ -39,7 +38,10 @@ const HallOfPiratesPage: React.FC = () => {
   const [startIndex, setStartIndex] = useState<number>(0);
 
   // local variables
-  const visibleData = leaderBoard.slice(startIndex, startIndex + HALL_OF_PIRATES_PAGE_SIZE);
+  const visibleData = leaderBoard.slice(
+    startIndex,
+    startIndex + HALL_OF_PIRATES_PAGE_SIZE
+  );
   const randomIcon = useMemo(
     () => LEADERBOARD_ICONS[Math.floor(Math.random() * 4)].img,
     []
@@ -75,10 +77,7 @@ const HallOfPiratesPage: React.FC = () => {
           <TableBody>
             {visibleData.map((player, index) => (
               <TableRow key={player.playerID}>
-                <TableCell>
-                  #
-                  {index + startIndex + 1}
-                </TableCell>
+                <TableCell>#{index + startIndex + 1}</TableCell>
                 <TableCell className="flex items-center cursor-pointer">
                   <Link to={`/captain/${player.playerID}`}>
                     <Button
@@ -105,7 +104,7 @@ const HallOfPiratesPage: React.FC = () => {
         <Button
           size={"sm"}
           onClick={handlePrevious}
-          className={cn(startIndex === 0 && "hidden")}
+          disabled={startIndex === 0}
         >
           <ArrowBigLeft />
           Prev
@@ -113,7 +112,9 @@ const HallOfPiratesPage: React.FC = () => {
         <Button
           size={"sm"}
           onClick={handleNext}
-          className={cn(startIndex + HALL_OF_PIRATES_PAGE_SIZE >= leaderBoard.length && "hidden")}
+          disabled={
+            startIndex + HALL_OF_PIRATES_PAGE_SIZE >= leaderBoard.length
+          }
         >
           Next
           <ArrowBigRight />

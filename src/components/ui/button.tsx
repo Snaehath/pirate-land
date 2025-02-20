@@ -6,7 +6,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "animate-fade-in inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base ring-offset-white transition-all gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "animate-fade-in inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base ring-offset-white transition-all gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -29,27 +29,32 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  },
+  }
 );
 
 export interface ButtonProperties
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
-  asChild?: boolean
+  asChild?: boolean;
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
-  ({ className, variant, size, asChild = false, onClick, ...properties }, reference) => {
+  (
+    { className, variant, size, asChild = false, onClick, ...properties },
+    reference
+  ) => {
     const Comp = asChild ? Slot : "button";
-    
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+
+    const handleClick = (
+      event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ) => {
       const audio = new Audio("/audio/tree-hit.mp3");
       audio.play();
       if (onClick) {
         onClick(event);
       }
     };
-    
+
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
@@ -58,7 +63,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
         {...properties}
       />
     );
-  },
+  }
 );
 Button.displayName = "Button";
 
