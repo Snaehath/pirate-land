@@ -56,6 +56,25 @@ export const AVATARS: Avatar[] = [
   },
 ];
 
+export const AVATARS_ICONS: Avatar[] = [
+  {
+    img: "/avatars/white-boy-icon.png",
+    alt: "White boy pirate kid icon",
+  },
+  {
+    img: "/avatars/white-girl-icon.png",
+    alt: "White girl pirate kid icon",
+  },
+  {
+    img: "/avatars/black-boy-icon.png",
+    alt: "Black boy pirate kid icon",
+  },
+  {
+    img: "/avatars/black-girl-icon.png",
+    alt: "Black girl pirate kid icon",
+  },
+];
+
 export const LEADERBOARD_ICONS: Avatar[] = [
   {
     img: "/avatars/white-boy-icon.png",

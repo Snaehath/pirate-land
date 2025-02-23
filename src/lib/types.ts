@@ -30,7 +30,7 @@ export type Avatar = {
 };
 
 export type LeaderBoard = {
-  playerID: string;
-  won: number;
-  total: number;
+  player_id: string;
+  wins: number;
+  total_played: number;
 };

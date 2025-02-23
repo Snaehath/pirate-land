@@ -1,6 +1,6 @@
-import { Link } from "react-router";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
+import axios from "axios";
 
 // custom
 import {
@@ -12,7 +12,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { LeaderBoard } from "@/lib/types";
-import { LEADERBOARD_ICONS } from "@/data/components";
 import {
   Card,
   CardContent,
@@ -22,29 +21,23 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { HALL_OF_PIRATES_PAGE_SIZE } from "@/data/app";
-
-const leaderBoard: LeaderBoard[] = [
-  { playerID: "player1", won: 10, total: 15 },
-  { playerID: "player2", won: 7, total: 15 },
-  { playerID: "player3", won: 12, total: 15 },
-  { playerID: "player4", won: 11, total: 15 },
-  { playerID: "player5", won: 6, total: 15 },
-  { playerID: "player6", won: 14, total: 15 },
-  { playerID: "player7", won: 14, total: 15 },
-];
+import { useAppContext } from "@/contexts/app";
+import { Skeleton } from "@/components/ui/skeleton";
+import PlayerCard from "@/components/hall-of-pirates/player-card";
 
 const HallOfPiratesPage: React.FC = () => {
+  // hooks
+  const { token } = useAppContext();
+
   // states
   const [startIndex, setStartIndex] = useState<number>(0);
+  const [leaderboard, setLeaderboard] = useState<LeaderBoard[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // local variables
-  const visibleData = leaderBoard.slice(
+  const visibleData = leaderboard.slice(
     startIndex,
     startIndex + HALL_OF_PIRATES_PAGE_SIZE
-  );
-  const randomIcon = useMemo(
-    () => LEADERBOARD_ICONS[Math.floor(Math.random() * 4)].img,
-    []
   );
 
   const handlePrevious = () => {
@@ -54,6 +47,24 @@ const HallOfPiratesPage: React.FC = () => {
   const handleNext = () => {
     setStartIndex((previousState) => previousState + HALL_OF_PIRATES_PAGE_SIZE);
   };
+
+  useEffect(() => {
+    const fetchLeaderboard = async () => {
+      if (token.length === 0) return;
+      try {
+        setIsLoading(true);
+        const { data } = await axios.get<LeaderBoard[]>("/leaderboard", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setLeaderboard(data);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchLeaderboard();
+  }, [token]);
 
   return (
     <Card className="self-center font-pirate-kids">
@@ -75,28 +86,30 @@ const HallOfPiratesPage: React.FC = () => {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {visibleData.map((player, index) => (
-              <TableRow key={player.playerID}>
-                <TableCell>#{index + startIndex + 1}</TableCell>
-                <TableCell className="flex items-center cursor-pointer">
-                  <Link to={`/captain/${player.playerID}`}>
-                    <Button
-                      variant={"noShadow"}
-                      className="border-none transition-transform transform hover:scale-110 underline underline-offset-4"
-                    >
-                      <img
-                        src={randomIcon}
-                        alt="player profile"
-                        className="w-20"
-                      />
-                      {player.playerID}
-                    </Button>
-                  </Link>
-                </TableCell>
-                <TableCell>{player.won}</TableCell>
-                <TableCell>{player.total}</TableCell>
-              </TableRow>
-            ))}
+            {isLoading &&
+              [..."123"].map((v) => (
+                <TableRow key={v}>
+                  {[..."1234"].map((v1) => (
+                    <TableCell key={`${v}-${v1}`}>
+                      <Skeleton className="h-7" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            {!isLoading &&
+              visibleData.map((player, index) => (
+                <TableRow key={player.player_id}>
+                  <TableCell>
+                    #
+                    {index + startIndex + 1}
+                  </TableCell>
+                  <TableCell>
+                    <PlayerCard player_id={player.player_id} />
+                  </TableCell>
+                  <TableCell>{player.wins || "- -"}</TableCell>
+                  <TableCell>{player.total_played || "- -"}</TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </CardContent>
@@ -113,7 +126,7 @@ const HallOfPiratesPage: React.FC = () => {
           size={"sm"}
           onClick={handleNext}
           disabled={
-            startIndex + HALL_OF_PIRATES_PAGE_SIZE >= leaderBoard.length
+            startIndex + HALL_OF_PIRATES_PAGE_SIZE >= leaderboard.length
           }
         >
           Next
