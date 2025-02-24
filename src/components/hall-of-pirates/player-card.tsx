@@ -20,7 +20,7 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
   // fetch user info
   useEffect(() => {
     const fetchPlayer = async () => {
-      if (token.length === 0) return;
+      if (token?.length === 0) return;
       try {
         setIsLoading(true);
         const { data } = await axios.get(`/users/${playerId}`, {

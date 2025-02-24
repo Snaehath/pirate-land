@@ -1,4 +1,4 @@
-import { Scroll, Swords, TreePalm, VenetianMask } from "lucide-react";
+import { Scroll, TreePalm, VenetianMask } from "lucide-react";
 import { Navigate, useNavigate } from "react-router";
 import axios from "axios";
 
@@ -8,6 +8,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { useAppContext } from "@/contexts/app";
 import SuspenseLoader from "@/components/suspense-loader";
 import { useToast } from "@/hooks/use-toast";
+import RaidIsland from "@/components/harbor/raid-island";
 
 const HarborPage: React.FC = () => {
   // hooks
@@ -76,10 +77,7 @@ const HarborPage: React.FC = () => {
           <TreePalm />
           Build Your Island
         </Button>
-        <Button className="font-pirate-kids">
-          <Swords />
-          Raid Island
-        </Button>
+        <RaidIsland />
         <Button
           onClick={handleHallOfPirates}
           className="font-pirate-kids"

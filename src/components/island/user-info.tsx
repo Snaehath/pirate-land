@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Crown, Loader } from "lucide-react";
 
 // custom
 import { User } from "@/lib/types";
@@ -7,9 +8,8 @@ import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "../ui/skeleton";
 import { AVATARS } from "@/data/components";
 import Typography from "../typography";
-import { Loader } from "lucide-react";
 
-const UserInfo: React.FC<UserInfoProperties> = ({ userId }) => {
+const UserInfo: React.FC<UserInfoProperties> = ({ userId, isCreator }) => {
   // hooks
   const { token } = useAppContext();
 
@@ -23,7 +23,7 @@ const UserInfo: React.FC<UserInfoProperties> = ({ userId }) => {
   // fetch user info
   useEffect(() => {
     const fetchPlayer = async () => {
-      if (token.length === 0) return;
+      if (token?.length === 0) return;
       try {
         setIsLoading(true);
         const { data } = await axios.get(`/users/${userId}`, {
@@ -48,12 +48,13 @@ const UserInfo: React.FC<UserInfoProperties> = ({ userId }) => {
     );
   }
 
+  // when user has not joined
   if (userId === null) {
     return <div className="flex flex-col items-center gap-3">
       <div className="size-56 flex items-center justify-center animate-pulse border-dashed border-2 rounded">
         <Loader className="animate-spin text-white" />
       </div>
-      <Typography className="animate-pulse text-white font-pirate-kids">Waiting for a Captain to Join...</Typography>
+      <Typography className="animate-pulse font-pirate-kids">Waiting for a Captain to Join...</Typography>
     </div>;
   }
 
@@ -64,7 +65,10 @@ const UserInfo: React.FC<UserInfoProperties> = ({ userId }) => {
         src={userAvatar.img}
         alt={userAvatar.alt}
       />
-      <Typography className="font-pirate-kids">{player?.name}</Typography>
+      <div className="flex items-center gap-1">
+        {isCreator && <Crown className="fill-[#FFD700]" />}
+        <Typography className="font-pirate-kids">{player?.name}</Typography>
+      </div>
     </div>
   );
 };
@@ -73,4 +77,5 @@ export default UserInfo;
 
 interface UserInfoProperties {
   userId: string | null;
+  isCreator: boolean;
 }

@@ -53,7 +53,7 @@ const HallOfPiratesPage: React.FC = () => {
   // fetching all the players
   useEffect(() => {
     const fetchLeaderboard = async () => {
-      if (token.length === 0) return;
+      if (token?.length === 0) return;
       try {
         setIsLoading(true);
         const { data } = await axios.get<
