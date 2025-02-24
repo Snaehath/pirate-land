@@ -8,15 +8,21 @@ import SuspenseLoader from "@/components/suspense-loader";
 
 const LoginPage: React.FC = () => {
   // hooks
-  const { token, authChecking } = useAppContext();
+  const { token, authChecking, island } = useAppContext();
 
   if (authChecking) {
     return <SuspenseLoader />;
   }
 
-  return token?.length > 0 ? (
-    <Navigate to="/harbor" />
-  ) : (
+  if (token?.length > 0) {
+    return <Navigate to="/harbor" />;
+  }
+
+  if (island.length > 0) {
+    return <Navigate to={`/island/${island}`} />;
+  }
+
+  return (
     <Card className="self-center">
       <CardContent className="p-6 pb-3 gap-3 flex flex-col items-center justify-center">
         <p className="font-pirate-kids text-5xl sm:text-7xl">Pirate Land</p>

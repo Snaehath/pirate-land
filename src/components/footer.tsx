@@ -1,3 +1,6 @@
+import { useLocation } from "react-router";
+
+// custom
 import LanguageSelector from "./language-selector";
 import Branding from "./branding";
 import { Card, CardContent } from "./ui/card";
@@ -8,6 +11,12 @@ import { useAppContext } from "@/contexts/app";
 const Footer: React.FC = () => {
   // hooks
   const {token} = useAppContext();
+  const location = useLocation();
+
+  // local variables
+  const isIsland = location.pathname.includes("/island");
+
+  if (isIsland) return <></>; 
 
   return (
     <div className="w-full flex items-center justify-center sm:justify-between">

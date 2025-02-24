@@ -25,7 +25,7 @@ import CaptainAvatar from "@/components/captain/avatar";
 const CaptainPage: React.FC = () => {
   // hooks
   const { id } = useParams();
-  const { token, authChecking, userId } = useAppContext();
+  const { token, authChecking, userId, island } = useAppContext();
 
   // states
   const [avatar, setAvatar] = useState<number>(0);
@@ -104,6 +104,10 @@ const CaptainPage: React.FC = () => {
 
   if (!(token?.length > 0)) {
     return <Navigate to="/" />;
+  }
+
+  if (island.length > 0) {
+    return <Navigate to={`/island/${island}`} />;
   }
 
   if (userNotFound) {

@@ -18,7 +18,15 @@ const ParaButton: React.FC = () => {
   const { t } = useTranslation("login");
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { setLoadingText, setToken, setUserId, loadingText, authChecking, setAuthChecking } = useAppContext();
+  const {
+    setLoadingText,
+    setToken,
+    setUserId,
+    loadingText,
+    authChecking,
+    setAuthChecking,
+    setIsland,
+  } = useAppContext();
 
   // states
   const [paraOpen, setParaOpen] = useState<boolean>(false);
@@ -30,7 +38,7 @@ const ParaButton: React.FC = () => {
   const handleParaClose = async () => {
     if (!paraOpen) return;
     setParaOpen(false);
-    
+
     if (authChecking) return;
     setAuthChecking!(true);
 
@@ -57,7 +65,11 @@ const ParaButton: React.FC = () => {
       }
 
       // try login
-      const { data } = await axios.post("/auth/login", { userId });
+      const { data } = await axios.post<{
+        isExisting: boolean;
+        sessionToken: string;
+        currentGame: string | null;
+      }>("/auth/login", { userId });
 
       setLoadingText!(undefined);
 
@@ -68,8 +80,15 @@ const ParaButton: React.FC = () => {
         toast({
           title: "🦜 Ahoy! Welcome Aboard, Captain! ☠️⚓",
         });
+        if (data.currentGame === null) {
+          navigate("/harbor");
+        } else {
+          setIsland!(data.currentGame);
+          navigate(`/island/${data.currentGame}`);
+        }
+      } else {
+        navigate(`/captain/${userId}`);
       }
-      navigate(data.isExisting ? "/harbor" : `/captain/${userId}`);
     } catch (error) {
       setAuthChecking!(false);
       setLoadingText!(undefined);

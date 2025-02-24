@@ -21,6 +21,7 @@ const defaultState: AppContextState = {
   token: localStorage.getItem(TOKEN_KEY) ?? "",
   userId: localStorage.getItem(USER_ID_KEY) ?? "",
   authChecking: false,
+  island: "",
 };
 
 const AppContext = createContext<AppContextState>(defaultState);
@@ -45,6 +46,7 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [authChecking, setAuthChecking] = useState<boolean>(
     defaultState.authChecking
   );
+  const [island, setIsland] = useState<string>(defaultState.island);
 
   // states
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
@@ -72,48 +74,73 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setUserId,
       authChecking,
       setAuthChecking,
+      island,
+      setIsland,
     }),
-    [volume, handleVolumeChange, loadingText, token, userId, authChecking]
+    [
+      volume,
+      handleVolumeChange,
+      loadingText,
+      token,
+      userId,
+      authChecking,
+      island,
+    ]
   );
 
   // when landing checking if the para
-  // session didn't expire
+  // session didn't expire also check
+  // if the user is in any game
   useEffect(() => {
     if (!token || authChecking || authChecked.current) return;
-    
+
     const checkingExpiration = async () => {
       setAuthChecking(true);
       try {
         const isSessionActive = await paraClient.isSessionActive();
 
-        // no problem when session is active
-        if (isSessionActive) {
+        // when session expired, perform log out operations
+        if (!isSessionActive) {
+          await paraClient.logout();
+          await axios.delete("/auth/logout", {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setToken("");
+          setUserId("");
+          setIsland("");
           setAuthChecking(false);
+
+          toast({
+            title: "⚠️ The Wind Has Shifted! ⏳",
+            description:
+              "Arrr! Ye've been adrift too long, and the session be gone! Log in again to continue yer journey!",
+          });
           return;
         }
 
-        // when session expired, perform log out operations
-        await paraClient.logout();
-        await axios.delete("/auth/logout", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setToken("");
-        setUserId("");
+        // when session active see if user
+        // is in any match
+        const { data } = await axios.post<{ currentGame: string | null }>(
+          "/users/current-game",
+          undefined,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setAuthChecking(false);
-
-        toast({
-          title: "⚠️ The Wind Has Shifted! ⏳",
-          description:
-            "Arrr! Ye've been adrift too long, and the session be gone! Log in again to continue yer journey!",
-        });
+        if (data.currentGame !== null) {
+          setIsland(data.currentGame);
+        }
       } catch {
         setAuthChecking(false);
       }
     };
     checkingExpiration();
-    
+
     authChecked.current = true;
   }, [token, authChecking, toast]);
 
@@ -175,4 +202,6 @@ interface AppContextState {
   setUserId?: React.Dispatch<React.SetStateAction<string>>;
   authChecking: boolean;
   setAuthChecking?: React.Dispatch<React.SetStateAction<boolean>>;
+  island: string;
+  setIsland?: React.Dispatch<React.SetStateAction<string>>;
 }

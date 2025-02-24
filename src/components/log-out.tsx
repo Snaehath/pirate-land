@@ -8,28 +8,40 @@ import { Button } from "./ui/button";
 import paraClient from "@/web3/para-client";
 import { useAppContext } from "@/contexts/app";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "./ui/alert-dialog";
 
 const LogOutButton: React.FC = () => {
   // hooks
   const navigate = useNavigate();
   const location = useLocation();
-  const { setLoadingText, token, setToken, setUserId } = useAppContext();
+  const { setLoadingText, token, setToken, setUserId, setIsland } =
+    useAppContext();
   const { toast } = useToast();
 
   const handleLogout = async () => {
-
     try {
       setLoadingText!("Sailing Away... 'Til We Meet Again! 🚢☠️");
-      
+
       await paraClient.logout();
       await axios.delete("/auth/logout", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       setToken!("");
       setUserId!("");
+      setIsland!("");
 
       setLoadingText!(undefined);
 
@@ -37,28 +49,48 @@ const LogOutButton: React.FC = () => {
       toast({
         title: "The seas await yer return!",
       });
-    } catch  {
+    } catch {
       setLoadingText!(undefined);
       toast({
         title: "⚠️ Arrr! The Anchor Be Stuck! 🏴‍☠️",
-        description: "Trouble leavin' the ship, Captain! Try again or check yer connection!",
+        description:
+          "Trouble leavin' the ship, Captain! Try again or check yer connection!",
         variant: "destructive",
       });
-    };
+    }
   };
 
   return location?.pathname === "/" ? undefined : (
-    <ToolTip
-      content="Set Sail Away"
-      hideOnMobile
-    >
-      <Button
-        size="icon"
-        onClick={handleLogout}
+    <AlertDialog>
+      <ToolTip
+        content="Set Sail Away"
+        hideOnMobile
       >
-        <LogOut />
-      </Button>
-    </ToolTip>
+        <AlertDialogTrigger>
+          <Button size="icon">
+            <LogOut />
+          </Button>
+        </AlertDialogTrigger>
+      </ToolTip>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle className="font-pirate-kids">Set Sail to Log Out?</AlertDialogTitle>
+          <AlertDialogDescription className="font-pirate-kids">
+            Are you sure you want to log out, Captain? Your adventure will be
+            paused until you return!
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel className="font-pirate-kids">Stay Aboard! 🏴‍☠️</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={handleLogout}
+            className="font-pirate-kids"
+          >
+            Aye, Log Out! ⚓
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 

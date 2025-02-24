@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ArrowBigLeft, ArrowBigRight } from "lucide-react";
 import axios from "axios";
+import { Navigate } from "react-router";
 
 // custom
 import {
@@ -24,10 +25,11 @@ import { HALL_OF_PIRATES_PAGE_SIZE } from "@/data/app";
 import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "@/components/ui/skeleton";
 import PlayerCard from "@/components/hall-of-pirates/player-card";
+import SuspenseLoader from "@/components/suspense-loader";
 
 const HallOfPiratesPage: React.FC = () => {
   // hooks
-  const { token } = useAppContext();
+  const { token, authChecking, island } = useAppContext();
 
   // states
   const [startIndex, setStartIndex] = useState<number>(0);
@@ -65,6 +67,18 @@ const HallOfPiratesPage: React.FC = () => {
     };
     fetchLeaderboard();
   }, [token]);
+
+  if (authChecking) {
+    return <SuspenseLoader />;
+  }
+
+  if (!(token?.length > 0)) {
+    return <Navigate to="/" />;
+  }
+
+  if (island.length > 0) {
+    return <Navigate to={`/island/${island}`} />;
+  }
 
   return (
     <Card className="self-center font-pirate-kids">

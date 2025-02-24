@@ -29,8 +29,6 @@ export const PARA_MODAL_PROPS: ParaModalProps = {
   logo: "https://pirateland.vercel.app/favicon.svg",
   oAuthMethods: [
     OAuthMethod.GOOGLE,
-    OAuthMethod.APPLE,
-    OAuthMethod.FACEBOOK,
   ],
   disablePhoneLogin: true,
   authLayout: ["AUTH:FULL"],

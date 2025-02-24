@@ -19,6 +19,9 @@ const Header: React.FC = () => {
   const navigate = useNavigate();
   const { token } = useAppContext();
 
+  // local variables
+  const isIsland = location.pathname.includes("/island");
+
   const handleGoBack = () => {
     navigate("/harbor");
   };
@@ -30,7 +33,9 @@ const Header: React.FC = () => {
       ) : (
         <Card className="sm:self-start">
           <CardContent className="px-2 flex gap-3 py-2 sm:py-1 items-center sm:items-start justify-center">
-            {token?.length > 0 && location.pathname !== "/harbor" && (
+            {token?.length > 0 &&
+              location.pathname !== "/harbor" &&
+              !isIsland && (
               <ToolTip content="Back to Harbor">
                 <Button
                   size="icon"
@@ -40,7 +45,9 @@ const Header: React.FC = () => {
                 </Button>
               </ToolTip>
             )}
-            <p className="font-pirate-kids text-2xl sm:text-5xl animate-fade-in">Pirate Land</p>
+            <p className="font-pirate-kids text-2xl sm:text-5xl animate-fade-in">
+              Pirate Land
+            </p>
           </CardContent>
         </Card>
       )}
@@ -59,6 +66,15 @@ const Header: React.FC = () => {
         </Popover>
       ) : (
         <div />
+      )}
+      {isIsland && (
+        <Card className="hidden sm:inline">
+          <CardContent className="p-3 gap-3 flex items-center">
+            <VolumeController />
+            <LanguageSelector />
+            {token?.length > 0 && <LogOutButton />}
+          </CardContent>
+        </Card>
       )}
     </div>
   );
