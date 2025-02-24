@@ -9,7 +9,7 @@ import { AVATARS_ICONS } from "@/data/components";
 import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "../ui/skeleton";
 
-const PlayerCard: React.FC<PlayerCardProperties> = ({ player_id }) => {
+const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
   // hooks
   const { token } = useAppContext();
 
@@ -17,12 +17,13 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ player_id }) => {
   const [player, setPlayer] = useState<User>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
+  // fetch user info
   useEffect(() => {
     const fetchPlayer = async () => {
       if (token.length === 0) return;
       try {
         setIsLoading(true);
-        const { data } = await axios.get(`/users/${player_id}`, {
+        const { data } = await axios.get(`/users/${playerId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -33,7 +34,7 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ player_id }) => {
       }
     };
     fetchPlayer();
-  }, [token, player_id]);
+  }, [token, playerId]);
 
   if (isLoading) {
     return (
@@ -69,5 +70,5 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ player_id }) => {
 export default PlayerCard;
 
 interface PlayerCardProperties {
-  player_id: string;
+  playerId: string;
 }

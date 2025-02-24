@@ -50,17 +50,26 @@ const HallOfPiratesPage: React.FC = () => {
     setStartIndex((previousState) => previousState + HALL_OF_PIRATES_PAGE_SIZE);
   };
 
+  // fetching all the players
   useEffect(() => {
     const fetchLeaderboard = async () => {
       if (token.length === 0) return;
       try {
         setIsLoading(true);
-        const { data } = await axios.get<LeaderBoard[]>("/leaderboard", {
+        const { data } = await axios.get<
+          { wins: number; player_id: string; total_played: number }[]
+        >("/leaderboard", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-        setLeaderboard(data);
+        setLeaderboard(
+          data.map((player) => ({
+            playerId: player.player_id,
+            wins: player.wins,
+            totalPlayed: player.total_played,
+          }))
+        );
       } finally {
         setIsLoading(false);
       }
@@ -112,16 +121,16 @@ const HallOfPiratesPage: React.FC = () => {
               ))}
             {!isLoading &&
               visibleData.map((player, index) => (
-                <TableRow key={player.player_id}>
+                <TableRow key={player.playerId}>
                   <TableCell>
                     #
                     {index + startIndex + 1}
                   </TableCell>
                   <TableCell>
-                    <PlayerCard player_id={player.player_id} />
+                    <PlayerCard playerId={player.playerId} />
                   </TableCell>
                   <TableCell>{player.wins || "- -"}</TableCell>
-                  <TableCell>{player.total_played || "- -"}</TableCell>
+                  <TableCell>{player.totalPlayed || "- -"}</TableCell>
                 </TableRow>
               ))}
           </TableBody>

@@ -1,4 +1,4 @@
-import { LogOut } from "lucide-react";
+import { Anchor, Flag, LogOut } from "lucide-react";
 import { useLocation, useNavigate } from "react-router";
 import axios from "axios";
 
@@ -66,7 +66,7 @@ const LogOutButton: React.FC = () => {
         content="Set Sail Away"
         hideOnMobile
       >
-        <AlertDialogTrigger>
+        <AlertDialogTrigger asChild>
           <Button size="icon">
             <LogOut />
           </Button>
@@ -81,12 +81,16 @@ const LogOutButton: React.FC = () => {
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="font-pirate-kids">Stay Aboard! 🏴‍☠️</AlertDialogCancel>
+          <AlertDialogCancel className="font-pirate-kids">
+            <Flag />
+            Stay Aboard!
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleLogout}
             className="font-pirate-kids"
           >
-            Aye, Log Out! ⚓
+            <Anchor />
+            Aye, Log Out!
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>

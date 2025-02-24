@@ -30,7 +30,17 @@ export type Avatar = {
 };
 
 export type LeaderBoard = {
-  player_id: string;
+  playerId: string;
   wins: number;
-  total_played: number;
+  totalPlayed: number;
+};
+
+export type Island = {
+  id: string;
+  chance: string;
+  creator: string;
+  creatorPayed: boolean | null;
+  invitee: string | null;
+  inviteePayed: boolean | null;
+  status: "CREATED" | "READY" | "STARTED" | "ENDED";
 };

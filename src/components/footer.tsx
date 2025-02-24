@@ -16,7 +16,7 @@ const Footer: React.FC = () => {
   // local variables
   const isIsland = location.pathname.includes("/island");
 
-  if (isIsland) return <></>; 
+  if (isIsland) return <div />; 
 
   return (
     <div className="w-full flex items-center justify-center sm:justify-between">
