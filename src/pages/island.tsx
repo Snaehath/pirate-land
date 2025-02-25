@@ -21,10 +21,12 @@ import UserInfo from "@/components/island/user-info";
 import { Button } from "@/components/ui/button";
 import ToolTip from "@/components/tooltip";
 import Typography from "@/components/typography";
+import { useSocketContext } from "@/contexts/socket";
 
 const IslandPage: React.FC = () => {
   // hooks
   const { islandId } = useParams();
+  const { socket } = useSocketContext();
   const { authChecking, token, island, userId } = useAppContext();
 
   // states
@@ -57,6 +59,20 @@ const IslandPage: React.FC = () => {
     };
     fetchIslandInfo();
   }, [token, islandId]);
+
+  // listening to socket events
+  useEffect(() => {
+    socket?.on("playerJoined", (event) => {
+      console.log({event});
+      setIslandInfo((previous) =>
+        previous
+          ? (event.userId === previous.creator
+            ? previous
+            : { ...previous, invitee: event.userId })
+          : undefined
+      );
+    });
+  }, [socket]);
 
   if (authChecking) {
     return <SuspenseLoader />;
@@ -114,7 +130,9 @@ const IslandPage: React.FC = () => {
               </div>
               <UserInfo
                 isCreator={islandInfo?.creator !== userId}
-                userId={isIslandCreator ? islandInfo.invitee : islandInfo.creator}
+                userId={
+                  isIslandCreator ? islandInfo.invitee : islandInfo.creator
+                }
               />
             </div>
           )}
@@ -122,7 +140,7 @@ const IslandPage: React.FC = () => {
       </CardContent>
       <CardFooter className="flex items-center justify-between gap-3">
         <StopGame />
-        {isIslandCreator && (
+        {isIslandCreator && islandInfo.invitee === null && (
           <>
             <InviteFriend islandId={islandId ?? ""} />
           </>

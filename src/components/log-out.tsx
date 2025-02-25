@@ -19,6 +19,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "./ui/alert-dialog";
+import { useSocketContext } from "@/contexts/socket";
 
 const LogOutButton: React.FC = () => {
   // hooks
@@ -27,6 +28,7 @@ const LogOutButton: React.FC = () => {
   const { setLoadingText, token, setToken, setUserId, setIsland } =
     useAppContext();
   const { toast } = useToast();
+  const {setSocket} = useSocketContext();
 
   const handleLogout = async () => {
     try {
@@ -42,6 +44,7 @@ const LogOutButton: React.FC = () => {
       setToken!("");
       setUserId!("");
       setIsland!("");
+      setSocket!(undefined);
 
       setLoadingText!(undefined);
 

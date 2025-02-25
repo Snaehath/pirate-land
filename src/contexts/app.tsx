@@ -1,9 +1,3 @@
-import axios from "axios";
-
-// custom
-import { TOKEN_KEY, USER_ID_KEY } from "@/data/app";
-import { useToast } from "@/hooks/use-toast";
-import paraClient from "@/web3/para-client";
 import {
   createContext,
   PropsWithChildren,
@@ -14,6 +8,14 @@ import {
   useRef,
   useState,
 } from "react";
+import axios from "axios";
+import { io } from "socket.io-client";
+
+// custom
+import { SOCKET_API, TOKEN_KEY, USER_ID_KEY } from "@/data/app";
+import { useToast } from "@/hooks/use-toast";
+import paraClient from "@/web3/para-client";
+import { useSocketContext } from "./socket";
 
 const defaultState: AppContextState = {
   volume: 30,
@@ -31,6 +33,7 @@ export const useAppContext = () => useContext(AppContext);
 const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // hooks
   const { toast } = useToast();
+  const {setSocket} = useSocketContext();
 
   // refs
   const audioReference = useRef<HTMLAudioElement | null>(null);
@@ -110,6 +113,7 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
           setToken("");
           setUserId("");
           setIsland("");
+          setSocket!(undefined);
           setAuthChecking(false);
 
           toast({
@@ -142,7 +146,7 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     checkingExpiration();
 
     authChecked.current = true;
-  }, [token, authChecking, toast]);
+  }, [token, authChecking, toast, setSocket]);
 
   // play audio after first user interaction anywhere
   // on the page
@@ -173,7 +177,12 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_ID_KEY, userId);
-  }, [token, userId]);
+    if (userId) {
+      setSocket!(previous => previous ?? io(SOCKET_API, {query: {userId}}));
+    } else {
+      setSocket!(undefined);
+    }
+  }, [setSocket, token, userId]);
 
   return (
     <>

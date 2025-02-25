@@ -17,10 +17,12 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useAppContext } from "@/contexts/app";
+import { useSocketContext } from "@/contexts/socket";
 
 const RaidIsland: React.FC = () => {
   // hooks
   const navigate = useNavigate();
+  const {socket} = useSocketContext();
   const {setLoadingText, setIsland, token} = useAppContext();
 
   // states
@@ -42,6 +44,7 @@ const RaidIsland: React.FC = () => {
         });
         setLoadingText!(undefined);
         setIsland!(islandId);
+        socket?.emit("joinRoom", islandId);
         navigate(`/island/${islandId}`);
     } catch (error) {
         setLoadingText!(undefined);

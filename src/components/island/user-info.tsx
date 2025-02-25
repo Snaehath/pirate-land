@@ -15,7 +15,7 @@ const UserInfo: React.FC<UserInfoProperties> = ({ userId, isCreator }) => {
 
   // states
   const [player, setPlayer] = useState<User>();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // local variables
   const userAvatar = AVATARS[player?.avatar ?? 0];
@@ -23,7 +23,7 @@ const UserInfo: React.FC<UserInfoProperties> = ({ userId, isCreator }) => {
   // fetch user info
   useEffect(() => {
     const fetchPlayer = async () => {
-      if (token?.length === 0) return;
+      if (token?.length === 0 || userId === null) return;
       try {
         setIsLoading(true);
         const { data } = await axios.get(`/users/${userId}`, {
