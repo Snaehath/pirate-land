@@ -38,7 +38,7 @@ const RaidIsland: React.FC = () => {
     if (islandId.length === 0 || token?.length === 0) return;
     try {
         setLoadingText!("Scouting the Island... 🏴‍☠️🔍 Hold tight while we chart the waters!");
-        await axios.put(`/islands/${islandId}`, undefined, {
+        await axios.put(`/islands/join-island/${islandId}`, undefined, {
           headers: {
             Authorization: `Bearer ${token}`,
           },

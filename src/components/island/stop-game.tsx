@@ -40,7 +40,7 @@ const StopGame: React.FC<StopGameProperties> = ({
         "Preparing the Escape Boat... 🚣‍♂️ Hold tight while we navigate your way out! 🏴‍☠️"
       );
 
-      await axios.delete(`/islands/${islandInfo.id}`, {
+      await axios.put(`/islands/end-voyage/${islandInfo.id}`, undefined, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
