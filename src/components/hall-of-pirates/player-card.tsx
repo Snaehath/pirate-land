@@ -8,10 +8,12 @@ import { User } from "@/lib/types";
 import { AVATARS_ICONS } from "@/data/components";
 import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "../ui/skeleton";
+import { Crown } from "lucide-react";
+import ToolTip from "../tooltip";
 
 const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
   // hooks
-  const { token } = useAppContext();
+  const { token, userId } = useAppContext();
 
   // states
   const [player, setPlayer] = useState<User>();
@@ -61,6 +63,7 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
             className="w-20"
           />
           {player.name}
+          {userId === playerId && <ToolTip content="You"><div><Crown /></div></ToolTip>}
         </Button>
       </Link>
     )
