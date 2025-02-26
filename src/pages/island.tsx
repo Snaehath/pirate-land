@@ -23,6 +23,8 @@ import ToolTip from "@/components/tooltip";
 import Typography from "@/components/typography";
 import { useSocketContext } from "@/contexts/socket";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import UserCard from "@/components/island/ready/user-card";
 
 const IslandPage: React.FC = () => {
   // hooks
@@ -43,7 +45,7 @@ const IslandPage: React.FC = () => {
   const handleReadyGame = async () => {
     if (!islandInfoReference.current || token?.length === 0 || !socket) return;
     try {
-      setLoadingText!("Moving the game to ready state...");
+      setLoadingText!("Hoisting the Sails! ⛵ Preparing the game for battle... ⚔️🏴‍☠️");
       await axios.put(`/islands/island-ready/${islandId}`, undefined, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -183,7 +185,9 @@ const IslandPage: React.FC = () => {
         <CardTitle className="text-center font-pirate-kids capitalize tracking-widest">
           {islandId?.split("-").join(" ")}
         </CardTitle>
-        <CardDescription />
+        <CardDescription className="text-center animate-pulse">
+          {islandInfo?.status === "READY" && "🛡️ Strategic Prep Underway! The game will begin once all players have set their positions. ⚔️🏴‍☠️"}
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col items-center">
@@ -233,11 +237,22 @@ const IslandPage: React.FC = () => {
           )}
           {/* container for ready state */}
           {islandInfo?.status === "READY" && (
-            <div>GAME IS READY</div>
+            <div className="flex items-center gap-3">
+              {/* user card */}
+              <UserCard {...{islandInfo, userId}} />
+              {/* game grid */}
+              <div></div>
+              {/* opponent card */}
+              <UserCard
+                userId={islandInfo.creator === userId ? islandInfo.invitee ?? "" : islandInfo.creator}
+                isOpponent
+                islandInfo={islandInfo}
+              />
+            </div>
           )}
         </div>
       </CardContent>
-      <CardFooter className="flex items-center justify-between gap-3">
+      <CardFooter className={cn("flex items-center justify-between gap-3", islandInfo?.status === "READY" && "hidden")}>
         <StopGame {...{ isIslandCreator, islandInfo }} />
         {isIslandCreator && islandInfo?.invitee === null && (
           <>

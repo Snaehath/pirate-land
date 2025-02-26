@@ -1,6 +1,7 @@
-import { Ban, Flag } from "lucide-react";
+import { Ban, Flag, LogOut } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import axios from "axios";
 
 // custom
 import { Button } from "../ui/button";
@@ -17,11 +18,11 @@ import {
 import { Island } from "@/lib/types";
 import { useAppContext } from "@/contexts/app";
 import { useSocketContext } from "@/contexts/socket";
-import axios from "axios";
 
 const StopGame: React.FC<StopGameProperties> = ({
   islandInfo,
   isIslandCreator,
+  fromReady,
 }) => {
   // hooks
   const navigate = useNavigate();
@@ -65,8 +66,8 @@ const StopGame: React.FC<StopGameProperties> = ({
           className="font-pirate-kids"
           variant="neutral"
         >
-          <Ban />
-          End Voyage
+          {fromReady ? <LogOut /> : <Ban />}
+          {fromReady ? "Leave Island" : "End Voyage"}
         </Button>
       </AlertDialogTrigger>
       <AlertDialogContent>
@@ -77,9 +78,9 @@ const StopGame: React.FC<StopGameProperties> = ({
                 Drop Anchor?
               </AlertDialogTitle>
               <AlertDialogDescription className="font-pirate-kids">
-                {isIslandCreator && islandInfo.invitee !== null
+                {fromReady ? "⚠️ Deserting the Ship! Leaving now will count as a lost battle—are you sure you want to abandon the fight? 🏴‍☠️⚔️" : (isIslandCreator && islandInfo.invitee !== null
                   ? "⚠️ Coward's Retreat! Stopping the game after a player joins will count as a loss—looks like you feared the challenge! 🏴‍☠️😨"
-                  : "Are you sure you want to stop the game? Your progress might be lost!"}
+                  : "Are you sure you want to stop the game? Your progress might be lost!")}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
@@ -92,7 +93,7 @@ const StopGame: React.FC<StopGameProperties> = ({
                 className="font-pirate-kids"
               >
                 <Ban />
-                Aye, Stop Game!
+                {fromReady ? "Leave Game!" : "Aye, Stop Game!"}
               </Button>
             </AlertDialogFooter>
           </>
@@ -107,4 +108,5 @@ export default StopGame;
 interface StopGameProperties {
   islandInfo: Island | undefined;
   isIslandCreator: boolean;
+  fromReady?: boolean;
 }
