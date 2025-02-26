@@ -44,7 +44,14 @@ const LogOutButton: React.FC = () => {
       setToken!("");
       setUserId!("");
       setIsland!("");
-      setSocket!(undefined);
+      setSocket!((previous) => {
+        if (previous) {
+          previous.disconnect();
+          return undefined;
+        } else {
+          return undefined;
+        }
+      });
 
       setLoadingText!(undefined);
 

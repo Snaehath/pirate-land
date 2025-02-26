@@ -9,7 +9,6 @@ import { useAppContext } from "@/contexts/app";
 import SuspenseLoader from "@/components/suspense-loader";
 import { useToast } from "@/hooks/use-toast";
 import RaidIsland from "@/components/harbor/raid-island";
-import { useSocketContext } from "@/contexts/socket";
 
 const HarborPage: React.FC = () => {
   // hooks
@@ -17,7 +16,6 @@ const HarborPage: React.FC = () => {
     useAppContext();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { socket } = useSocketContext();
 
   const handleCaptainInfo = () => {
     navigate(`/captain/${userId}`);
@@ -44,7 +42,6 @@ const HarborPage: React.FC = () => {
         title: "🏝️ Land Ho! Your Island Has Been Created Successfully! ⛵🎉",
       });
       setIsland!(roomName);
-      socket?.emit("joinRoom", roomName);
       navigate(`/island/${roomName}`);
     } catch {
       setLoadingText!(undefined);

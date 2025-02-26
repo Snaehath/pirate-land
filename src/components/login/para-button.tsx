@@ -113,6 +113,7 @@ const ParaButton: React.FC = () => {
       <Button
         variant="neutral"
         onClick={handleParaOpen}
+        className="font-pirate-kids"
       >
         {authChecking ? (
           <Loader className="animate-spin" />

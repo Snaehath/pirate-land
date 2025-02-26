@@ -1,4 +1,3 @@
-import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { HashRouter } from "react-router";
 import axios from "axios";
@@ -16,14 +15,12 @@ import { SocketContextProvider } from "./contexts/socket.tsx";
 axios.defaults.baseURL = REST_API;
 
 createRoot(document.querySelector("#root")!).render(
-  <StrictMode>
-    <HashRouter>
-      <SocketContextProvider>
-        <AppContextProvider>
-          <App />
-          <Toaster />
-        </AppContextProvider>
-      </SocketContextProvider>
-    </HashRouter>
-  </StrictMode>,
+  <HashRouter>
+    <SocketContextProvider>
+      <AppContextProvider>
+        <App />
+        <Toaster />
+      </AppContextProvider>
+    </SocketContextProvider>
+  </HashRouter>
 );

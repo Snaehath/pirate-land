@@ -17,12 +17,13 @@ import {
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { useAppContext } from "@/contexts/app";
-import { useSocketContext } from "@/contexts/socket";
+import { useToast } from "@/hooks/use-toast";
 
 const RaidIsland: React.FC = () => {
   // hooks
   const navigate = useNavigate();
-  const {socket} = useSocketContext();
+  const {toast} = useToast();
+
   const {setLoadingText, setIsland, token} = useAppContext();
 
   // states
@@ -44,12 +45,38 @@ const RaidIsland: React.FC = () => {
         });
         setLoadingText!(undefined);
         setIsland!(islandId);
-        socket?.emit("joinRoom", islandId);
         navigate(`/island/${islandId}`);
     } catch (error) {
         setLoadingText!(undefined);
         if (isAxiosError(error)) { 
-          // handle errors with appropriate toast messages
+          const errorMessage = error.response?.data as string ?? "";
+
+          // when island is not found
+          if (errorMessage.includes("not found")) {
+            toast({
+              title: "🏝️ Lost at Sea! The island you seek does not exist. Check the Island ID and try again!",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          // when island is already being raided
+          if (errorMessage === "Island already being raided") {
+            toast({
+              title: "⚔️ Under Siege! This island is already being raided. Try again later or find another target!",
+              variant: "destructive",
+            });
+            return;
+          }
+
+          // when island is full
+          if (errorMessage === "Island is full") {
+            toast({
+              title: "🏴‍☠️ No Room in the Crew! This island has reached its maximum capacity. Look for another adventure!",
+              variant: "destructive",
+            });
+            return;
+          }
         }
     }
   };

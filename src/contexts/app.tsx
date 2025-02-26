@@ -33,7 +33,7 @@ export const useAppContext = () => useContext(AppContext);
 const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
   // hooks
   const { toast } = useToast();
-  const {setSocket} = useSocketContext();
+  const { setSocket, socket } = useSocketContext();
 
   // refs
   const audioReference = useRef<HTMLAudioElement | null>(null);
@@ -113,7 +113,14 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
           setToken("");
           setUserId("");
           setIsland("");
-          setSocket!(undefined);
+          setSocket!((previous) => {
+            if (previous) {
+              previous.disconnect();
+              return undefined;
+            } else {
+              return undefined;
+            }
+          });
           setAuthChecking(false);
 
           toast({
@@ -178,11 +185,23 @@ const AppContextProvider: React.FC<PropsWithChildren> = ({ children }) => {
     localStorage.setItem(TOKEN_KEY, token);
     localStorage.setItem(USER_ID_KEY, userId);
     if (userId) {
-      setSocket!(previous => previous ?? io(SOCKET_API, {query: {userId}}));
+      setSocket!(
+        (previous) => previous ?? io(SOCKET_API, { query: { userId } })
+      );
     } else {
       setSocket!(undefined);
     }
   }, [setSocket, token, userId]);
+
+  // socket events
+  useEffect(() => {
+    if (socket === undefined) return;
+
+    // join island event
+    if (island.length > 0) {
+      socket.emit("joinRoom", island);
+    }
+  }, [socket, island]);
 
   return (
     <>
