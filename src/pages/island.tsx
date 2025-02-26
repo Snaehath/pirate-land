@@ -145,6 +145,9 @@ const IslandPage: React.FC = () => {
       if (!islandInfoReference.current || islandInfoReference.current.id !== event.roomId) return;
       islandInfoReference.current.status = "READY";
       setIslandInfo(previous => previous === undefined ? undefined : {...previous, status: "READY"});
+      toast({
+        title: "The creator has started the game. Get ready for battle!",
+      });
     };
 
     socket.off("playerJoined", handlePlayerJoined);

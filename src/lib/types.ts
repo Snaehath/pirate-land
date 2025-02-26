@@ -44,3 +44,9 @@ export type Island = {
   inviteePayed: boolean | null;
   status: "CREATED" | "READY" | "STARTED" | "ENDED";
 };
+
+export type Message = {
+  id: string;
+  message: string;
+  sender: string;
+};

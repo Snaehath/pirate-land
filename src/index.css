@@ -6,6 +6,11 @@
   font-family: "pirate-kids";
   src: url("./assets/fonts/pirate-kids.OTF");
 }
+
+@font-face {
+  font-family: "inter";
+  src: url("./assets/fonts/inter.ttf");
+}
   
 :root {
   --main: #FD9745;

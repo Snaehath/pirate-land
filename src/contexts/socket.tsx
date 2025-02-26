@@ -1,3 +1,4 @@
+import { Message } from "@/lib/types";
 import {
   createContext,
   Dispatch,
@@ -12,15 +13,17 @@ interface ServerToClientEvents {
   noArg: () => void;
   basicEmit: (a: number, b: string, c: Buffer) => void;
   withAck: (d: string, callback: (error: number) => void) => void;
-  playerJoined?: (messageObject: { userId: string }) => void;
-  playerLeft?: (messageObject: { userId: string }) => void;
-  readyGame?: (messageObject: { roomId: string }) => void;
+  playerJoined?: (data: { userId: string }) => void;
+  playerLeft?: (data: { userId: string }) => void;
+  readyGame?: (data: { roomId: string }) => void;
+  newMessage?: (data: Message) => void;
 }
 
 interface ClientToServerEvents {
   joinRoom?: (roomId: string) => void;
   leaveRoom?: (roomId: string) => void;
   readyGame?: (roomId: string) => void;
+  newMessage?: (data: { roomId: string; msgObj: Message }) => void;
 }
 
 interface SocketContextInterface {

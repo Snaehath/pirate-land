@@ -25,10 +25,16 @@ const LogOutButton: React.FC = () => {
   // hooks
   const navigate = useNavigate();
   const location = useLocation();
-  const { setLoadingText, token, setToken, setUserId, setIsland } =
-    useAppContext();
+  const {
+    setLoadingText,
+    token,
+    setToken,
+    setUserId,
+    setIsland,
+    authChecking,
+  } = useAppContext();
   const { toast } = useToast();
-  const {setSocket} = useSocketContext();
+  const { setSocket } = useSocketContext();
 
   const handleLogout = async () => {
     try {
@@ -70,7 +76,7 @@ const LogOutButton: React.FC = () => {
     }
   };
 
-  return location?.pathname === "/" ? undefined : (
+  return location?.pathname === "/" || authChecking ? undefined : (
     <AlertDialog>
       <ToolTip
         content="Set Sail Away"
@@ -84,7 +90,9 @@ const LogOutButton: React.FC = () => {
       </ToolTip>
       <AlertDialogContent>
         <AlertDialogHeader>
-          <AlertDialogTitle className="font-pirate-kids">Set Sail to Log Out?</AlertDialogTitle>
+          <AlertDialogTitle className="font-pirate-kids">
+            Set Sail to Log Out?
+          </AlertDialogTitle>
           <AlertDialogDescription className="font-pirate-kids">
             Are you sure you want to log out, Captain? Your adventure will be
             paused until you return!

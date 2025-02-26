@@ -58,38 +58,38 @@ const UserCard: React.FC<UserCardProperties> = ({
 
   return (
     player !== undefined && (
-      <div className="flex flex-col items-center gap-3">
+      <div className="flex flex-col">
         <Typography
-          variant="h2"
-          className="font-pirate-kids tracking-widest"
+          variant="h3"
+          className="font-pirate-kids tracking-widest self-center"
         >
           {player.name}
         </Typography>
         <img
           src={userAvatar.img}
           alt={userAvatar.alt}
-          className="w-52"
+          className="w-52 self-center"
         />
         <Typography
-          variant="h3"
-          className="font-pirate-kids tracking-widest"
+          className="font-pirate-kids tracking-widest self-center"
         >
           Placements Left
         </Typography>
         <Typography
-          variant="h3"
-          className="font-pirate-kids tracking-widest"
+          className="font-pirate-kids tracking-widest self-center"
         >
           5
         </Typography>
         {isOpponent ? (
-          <ChatContainer />
+          <ChatContainer islandInfo={islandInfo} />
         ) : (
-          <StopGame
-            islandInfo={islandInfo}
-            isIslandCreator={islandInfo.creator === userId}
-            fromReady
-          />
+          <div className="self-center">
+            <StopGame
+              islandInfo={islandInfo}
+              isIslandCreator={islandInfo.creator === userId}
+              fromReady
+            />
+          </div>
         )}
       </div>
     )

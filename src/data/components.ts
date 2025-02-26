@@ -39,6 +39,18 @@ export const TYPOGRAPHY_CLASS_NAME: {
 
 export const AVATARS: Avatar[] = [
   {
+    img: "/avatars/boy-mammoth.png",
+    alt: "Boy mammoth kid",
+  },
+  {
+    img: "/avatars/girl-mammoth.png",
+    alt: "Girl mammoth kid",
+  },
+  {
+    img: "/avatars/rainbow-mammoth.png",
+    alt: "Rainbow mammoth kid",
+  },
+  {
     img: "/avatars/white-boy.png",
     alt: "White boy pirate kid",
   },
@@ -58,6 +70,18 @@ export const AVATARS: Avatar[] = [
 
 export const AVATARS_ICONS: Avatar[] = [
   {
+    img: "/avatars/boy-mammoth-icon.png",
+    alt: "Boy mammoth icon",
+  },
+  {
+    img: "/avatars/girl-mammoth-icon.png",
+    alt: "Girl mammoth icon",
+  },
+  {
+    img: "/avatars/rainbow-mammoth-icon.png",
+    alt: "Rainbow mammoth icon",
+  },
+  {
     img: "/avatars/white-boy-icon.png",
     alt: "White boy pirate kid icon",
   },
@@ -76,6 +100,18 @@ export const AVATARS_ICONS: Avatar[] = [
 ];
 
 export const LEADERBOARD_ICONS: Avatar[] = [
+  {
+    img: "/avatars/boy-mammoth-icon.png",
+    alt: "Boy mammoth",
+  },
+  {
+    img: "/avatars/girl-mammoth-icon.png",
+    alt: "Girl mammoth",
+  },
+  {
+    img: "/avatars/rainbow-mammoth-icon.png",
+    alt: "Rainbow mammoth",
+  },
   {
     img: "/avatars/white-boy-icon.png",
     alt: "White boy pirate kid",
