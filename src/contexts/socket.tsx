@@ -14,11 +14,13 @@ interface ServerToClientEvents {
   withAck: (d: string, callback: (error: number) => void) => void;
   playerJoined?: (messageObject: { userId: string }) => void;
   playerLeft?: (messageObject: { userId: string }) => void;
+  readyGame?: (messageObject: { roomId: string }) => void;
 }
 
 interface ClientToServerEvents {
   joinRoom?: (roomId: string) => void;
   leaveRoom?: (roomId: string) => void;
+  readyGame?: (roomId: string) => void;
 }
 
 interface SocketContextInterface {

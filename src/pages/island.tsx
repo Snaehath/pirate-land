@@ -30,14 +30,33 @@ const IslandPage: React.FC = () => {
   const { socket } = useSocketContext();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { authChecking, token, island, userId, setIsland } = useAppContext();
-  const islandInfo = useRef<Island>(undefined);
+  const { authChecking, token, island, userId, setIsland, setLoadingText } = useAppContext();
+  const islandInfoReference = useRef<Island>(undefined);
 
   // states
+  const [islandInfo, setIslandInfo] = useState<Island>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // local variables
-  const isIslandCreator = islandInfo.current?.creator === userId;
+  const isIslandCreator = islandInfoReference.current?.creator === userId;
+
+  const handleReadyGame = async () => {
+    if (!islandInfoReference.current || token?.length === 0 || !socket) return;
+    try {
+      setLoadingText!("Moving the game to ready state...");
+      await axios.put(`/islands/island-ready/${islandId}`, undefined, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setLoadingText!(undefined);
+      islandInfoReference.current.status = "READY";
+      setIslandInfo(previous => previous === undefined ? previous : {...previous, status: "READY"});
+      socket.emit("readyGame", islandInfoReference.current.id);
+    } finally {
+      setLoadingText!(undefined);
+    }
+  };
 
   // fetch island info
   useEffect(() => {
@@ -55,7 +74,8 @@ const IslandPage: React.FC = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        islandInfo.current = data;
+        islandInfoReference.current = data;
+        setIslandInfo(data);
       } finally {
         setIsLoading(false);
       }
@@ -69,11 +89,12 @@ const IslandPage: React.FC = () => {
 
     const handlePlayerJoined = (event: {userId: string}) => {
       // nothing to do if creator joined
-      if (!islandInfo.current || event.userId === islandInfo.current?.creator)
+      if (!islandInfoReference.current || event.userId === islandInfoReference.current?.creator)
         return;
 
       // update island info when invitee joined
-      islandInfo.current.invitee = event.userId;
+      islandInfoReference.current.invitee = event.userId;
+      setIslandInfo(previous => previous === undefined ? undefined : {...previous, invitee: event.userId});
 
       toast({
         title: "A player joined the game",
@@ -81,49 +102,61 @@ const IslandPage: React.FC = () => {
     };
 
     const handlePlayerLeft = (event: {userId: string}) => {
-      if (!islandInfo.current) return;
+      if (!islandInfoReference.current) return;
 
       // when invitee left
-      if (event.userId === islandInfo.current.invitee) {
+      if (event.userId === islandInfoReference.current.invitee) {
         // and game is not in created state
         // means invitee lost
-        if (islandInfo.current.status === "CREATED") {
+        if (islandInfoReference.current.status === "CREATED") {
           toast({
             title: "Matey Has Fled! Waiting for another challenger to join the battle...",
             variant: "destructive",
           });
           // eslint-disable-next-line unicorn/no-null
-          islandInfo.current.invitee = null;
+          islandInfoReference.current.invitee = null;
+          // eslint-disable-next-line unicorn/no-null
+          setIslandInfo(previous => previous === undefined ? undefined : {...previous, invitee: null});
         } else {
           toast({
             title: "Victory Without a Fight! The opponent abandoned ship—you win this round!",
           });
-          socket.emit("leaveRoom", islandInfo.current.id);
+          socket.emit("leaveRoom", islandInfoReference.current.id);
           setIsland!("");
           navigate("/harbor");
         }
       }
 
       // when creator left
-      if (event.userId === islandInfo.current.creator) {
+      if (event.userId === islandInfoReference.current.creator) {
         toast({
           title: "Victory Without a Fight! The opponent abandoned ship—you win this round!",
         });
-        socket.emit("leaveRoom", islandInfo.current.id);
+        socket.emit("leaveRoom", islandInfoReference.current.id);
         setIsland!("");
         navigate("/harbor");
       }
     };
 
+    const handleGameReady = (event: { roomId: string }) => {
+      // nothing to do when it is not the current island
+      if (!islandInfoReference.current || islandInfoReference.current.id !== event.roomId) return;
+      islandInfoReference.current.status = "READY";
+      setIslandInfo(previous => previous === undefined ? undefined : {...previous, status: "READY"});
+    };
+
     socket.off("playerJoined", handlePlayerJoined);
     socket.off("playerLeft", handlePlayerLeft);
+    socket.off("readyGame", handleGameReady);
 
     socket.on("playerJoined", handlePlayerJoined);
     socket.on("playerLeft", handlePlayerLeft);
+    socket.on("readyGame", handleGameReady);
 
     return () => {
       socket.off("playerJoined", handlePlayerJoined);
       socket.off("playerLeft", handlePlayerLeft);
+      socket.off("readyGame", handleGameReady);
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
@@ -140,7 +173,7 @@ const IslandPage: React.FC = () => {
     return <Navigate to={`/island/${island}`} />;
   }
 
-  if (islandInfo.current?.status === "ENDED") {
+  if (islandInfo !== undefined && islandInfo.status === "ENDED") {
     return <Navigate to="/" />;
   }
 
@@ -155,16 +188,20 @@ const IslandPage: React.FC = () => {
       <CardContent>
         <div className="flex flex-col items-center">
           {isLoading && <Loader className="animate-spin self-center" />}
-          {islandInfo.current?.status === "CREATED" && (
+          {/* container for create state */}
+          {islandInfo?.status === "CREATED" && (
             <div className="flex items-center gap-3">
               <UserInfo
-                isCreator={islandInfo.current.creator === userId}
+                isCreator={islandInfo.creator === userId}
                 userId={userId}
               />
               {/* actions */}
               <div className="flex flex-col gap-3 items-center justify-center">
                 {isIslandCreator ? (
-                  <Button className="font-pirate-kids">
+                  <Button
+                    onClick={handleReadyGame}
+                    className="font-pirate-kids"
+                  >
                     <Swords />
                     Start Battle
                   </Button>
@@ -187,18 +224,22 @@ const IslandPage: React.FC = () => {
                 </ToolTip>
               </div>
               <UserInfo
-                isCreator={islandInfo.current.creator !== userId}
+                isCreator={islandInfo.creator !== userId}
                 userId={
-                  isIslandCreator ? islandInfo.current.invitee : islandInfo.current.creator
+                  isIslandCreator ? islandInfo.invitee : islandInfo.creator
                 }
               />
             </div>
           )}
+          {/* container for ready state */}
+          {islandInfo?.status === "READY" && (
+            <div>GAME IS READY</div>
+          )}
         </div>
       </CardContent>
       <CardFooter className="flex items-center justify-between gap-3">
-        <StopGame {...{ isIslandCreator, islandInfo: islandInfo.current }} />
-        {isIslandCreator && islandInfo.current?.invitee === null && (
+        <StopGame {...{ isIslandCreator, islandInfo }} />
+        {isIslandCreator && islandInfo?.invitee === null && (
           <>
             <InviteFriend islandId={islandId ?? ""} />
           </>
