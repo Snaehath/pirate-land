@@ -26,6 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { celeberate, cn, playAudio } from "@/lib/utils";
 import UserCard from "@/components/island/ready/user-card";
 import ReadyGameGrid from "@/components/island/ready/game-grid";
+import StartedGameGrid from "@/components/island/started-grid";
 
 const IslandPage: React.FC = () => {
   // hooks
@@ -43,6 +44,8 @@ const IslandPage: React.FC = () => {
   const [creatorInfo, setCreatorInfo] = useState<User>();
   const [inviteeInfo, setInviteeInfo] = useState<User>();
   const [userPositions, setUserPositions] = useState<number[]>([]);
+  const [captures, setCaptures] = useState<number[]>([]);
+  const [captured, setCaptured] = useState<number[]>([]);
   const [positionsFetching, setPositionsFetching] = useState<boolean>(false);
 
   // local variables
@@ -198,49 +201,105 @@ const IslandPage: React.FC = () => {
       });
     };
 
+    const handleGameEnded = (event: { roomId: string }) => {
+      console.log({event});
+      // nothing to do when it is not the current island
+      if (
+        !islandInfoReference.current ||
+        islandInfoReference.current.id !== event.roomId
+      )
+        return;
+      islandInfoReference.current.status = "ENDED";
+      setIslandInfo((previous) =>
+        previous === undefined ? undefined : { ...previous, status: "ENDED" }
+      );
+      toast({
+        title: "The battle has come to an end",
+      });
+    };
+
+    const handleCaptured = (event: { position: number; }) => {
+      setCaptured(previous => [...previous, event.position]);
+      playAudio("/audio/sword-hit.mp3");
+    };
+
+    const handleChanceUpdate = (event: {playerId: string}) => {
+      if (
+        !islandInfoReference.current
+      )
+        return;
+      islandInfoReference.current.chance = event.playerId;
+      setIslandInfo((previous) =>
+        previous === undefined ? undefined : { ...previous, chance: event.playerId }
+      );
+      toast({
+        title: "It's your chance mate",
+      });
+    };
+
     socket.off("playerJoined", handlePlayerJoined);
     socket.off("playerLeft", handlePlayerLeft);
     socket.off("readyGame", handleGameReady);
     socket.off("startedGame", handleGameStarted);
+    socket.off("endedGame", handleGameEnded);
+    socket.off("captured", handleCaptured);
+    socket.off("chanceUpdate", handleChanceUpdate);
 
     socket.on("playerJoined", handlePlayerJoined);
     socket.on("playerLeft", handlePlayerLeft);
     socket.on("readyGame", handleGameReady);
     socket.on("startedGame", handleGameStarted);
+    socket.on("endedGame", handleGameEnded);
+    socket.on("captured", handleCaptured);
+    socket.on("chanceUpdate", handleChanceUpdate);
 
     return () => {
       socket.off("playerJoined", handlePlayerJoined);
       socket.off("playerLeft", handlePlayerLeft);
       socket.off("readyGame", handleGameReady);
       socket.off("startedGame", handleGameStarted);
+      socket.off("endedGame", handleGameEnded);
+      socket.off("captured", handleCaptured);
+      socket.off("chanceUpdate", handleChanceUpdate);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
 
-  // fetch user positions in ready mode
+  // fetch positions in ready/started mode
   useEffect(() => {
-    const fetchUserPositions = async () => {
+    const fetchPositions = async () => {
       if (
-        islandInfo?.status !== "READY" ||
+        ["READY", "STARTED"].includes(islandInfo?.status ?? "") == false ||
         token?.length === 0 ||
         islandId === undefined ||
-        islandId.length === 0
+        islandId.length === 0 ||
+        islandInfo === undefined ||
+        userId.length === 0
       )
         return;
       try {
         setPositionsFetching(true);
-        const {data} = await axios.get<{positions: number[]}>(`/boards/positions/${islandInfo.id}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const { data } = await axios.get<{
+          positions: number[];
+          captures: number[];
+          captured: number[];
+        }>(
+          `/boards/positions/${islandInfo.id}/${islandInfo.creator === userId ? (islandInfo.invitee ?? "") : islandInfo.creator}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
         setUserPositions(data.positions);
+        setCaptures(data.captures);
+        setCaptured(data.captured);
       } finally {
         setPositionsFetching(false);
       }
     };
-    fetchUserPositions();
-  }, [islandId, islandInfo, token]);
+    fetchPositions();
+  }, [islandId, islandInfo, token, userId]);
 
   if (authChecking) {
     return <SuspenseLoader />;
@@ -254,22 +313,35 @@ const IslandPage: React.FC = () => {
     return <Navigate to={`/island/${island}`} />;
   }
 
-  if (islandInfo !== undefined && islandInfo.status === "ENDED") {
-    return <Navigate to="/" />;
-  }
-
   return (
-    <Card className={cn("self-center", !isLoading && islandInfo?.status !== "CREATED" && "bg-transparent rounded-none shadow-none border-none p-0")}>
-      <CardHeader className={cn(islandInfo?.status !== "CREATED" &&  "rounded-base shadow-shadow border-2 border-border bg-main")}>
+    <Card
+      className={cn(
+        "self-center",
+        !isLoading &&
+          islandInfo?.status !== "CREATED" &&
+          "bg-transparent rounded-none shadow-none border-none p-0"
+      )}
+    >
+      <CardHeader
+        className={cn(
+          islandInfo?.status !== "CREATED" &&
+            "rounded-base shadow-shadow border-2 border-border bg-main"
+        )}
+      >
         <CardTitle className="text-center font-pirate-kids capitalize tracking-widest">
           {islandId?.split("-").join(" ")}
         </CardTitle>
-        <CardDescription className="text-center animate-pulse">
+        <CardDescription className="font-pirate-kids tracking-widest text-center animate-pulse">
           {islandInfo?.status === "READY" &&
             "🛡️ Strategic Prep Underway! The game will begin once all players have set their positions. ⚔️🏴‍☠️"}
+          {islandInfo?.status === "STARTED" && (islandInfo.chance === userId
+            ? "Your chance"
+            : `${inviteeInfo?.name ?? "Opponet"}'s chance`)}
         </CardDescription>
       </CardHeader>
-      <CardContent className={cn(islandInfo?.status !== "CREATED" && "p-0 pt-2")}>
+      <CardContent
+        className={cn(islandInfo?.status !== "CREATED" && "p-0 pt-2")}
+      >
         <div className="flex flex-col items-center">
           {isLoading && <Loader className="animate-spin self-center" />}
           {/* container for create state */}
@@ -285,6 +357,7 @@ const IslandPage: React.FC = () => {
                   <Button
                     onClick={handleReadyGame}
                     className="font-pirate-kids"
+                    disabled={islandInfo.invitee === null}
                   >
                     <Swords />
                     Start Battle
@@ -338,7 +411,9 @@ const IslandPage: React.FC = () => {
                   setPositions={setUserPositions}
                   positionsFetching={positionsFetching}
                   islandId={islandInfo.id}
-                  user={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
+                  user={
+                    islandInfo.creator === userId ? creatorInfo : inviteeInfo
+                  }
                 />
               </div>
               {/* opponent card */}
@@ -362,12 +437,76 @@ const IslandPage: React.FC = () => {
               />
             </div>
           )}
+          {/* container for started state */}
+          {islandInfo?.status === "STARTED" && (
+            <div className="flex items-center gap-3">
+              {/* user card */}
+              <UserCard
+                fromStarted
+                positions={userPositions}
+                setPlayer={
+                  islandInfo.creator === userId
+                    ? setCreatorInfo
+                    : setInviteeInfo
+                }
+                player={
+                  islandInfo.creator === userId ? creatorInfo : inviteeInfo
+                }
+                {...{ islandInfo, userId, captures, captured }}
+              />
+              {/* game grid */}
+              <div className="bg-main p-1 rounded-base shadow-shadow">
+                <StartedGameGrid
+                  isChance={islandInfo.chance === userId}
+                  positions={userPositions}
+                  captures={captures}
+                  setCaptures={setCaptures}
+                  captured={captured}
+                  setPositions={setUserPositions}
+                  positionsFetching={positionsFetching}
+                  islandId={islandInfo.id}
+                  user={
+                    islandInfo.creator === userId ? creatorInfo : inviteeInfo
+                  }
+                  opponent={
+                    islandInfo.creator === userId ? inviteeInfo : creatorInfo
+                  }
+                  isCreator={islandInfo.creator === userId}
+                  islandInfoReference={islandInfoReference}
+                  setIslandInfo={setIslandInfo}
+                />
+              </div>
+              {/* opponent card */}
+              <UserCard
+                fromStarted
+                positions={userPositions}
+                setPlayer={
+                  islandInfo.creator === userId
+                    ? setInviteeInfo
+                    : setCreatorInfo
+                }
+                player={
+                  islandInfo.creator === userId ? inviteeInfo : creatorInfo
+                }
+                userId={
+                  islandInfo.creator === userId
+                    ? (islandInfo.invitee ?? "")
+                    : islandInfo.creator
+                }
+                isOpponent
+                {...{ islandInfo, captures, captured }}
+              />
+            </div>
+          )}
+          {/* container for ended state */}
+          {islandInfo?.status === "ENDED" && (
+            <div>scorecard here</div>)}
         </div>
       </CardContent>
       <CardFooter
         className={cn(
           "flex items-center justify-between gap-3",
-          islandInfo?.status === "READY" && "hidden"
+          islandInfo?.status !== "CREATED" && "hidden"
         )}
       >
         <StopGame {...{ isIslandCreator, islandInfo }} />

@@ -23,6 +23,7 @@ const StopGame: React.FC<StopGameProperties> = ({
   islandInfo,
   isIslandCreator,
   fromReady,
+  fromStarted,
 }) => {
   // hooks
   const navigate = useNavigate();
@@ -78,7 +79,7 @@ const StopGame: React.FC<StopGameProperties> = ({
                 Drop Anchor?
               </AlertDialogTitle>
               <AlertDialogDescription className="font-pirate-kids">
-                {fromReady ? "⚠️ Deserting the Ship! Leaving now will count as a lost battle—are you sure you want to abandon the fight? 🏴‍☠️⚔️" : (isIslandCreator && islandInfo.invitee !== null
+                {fromReady || fromStarted ? "⚠️ Deserting the Ship! Leaving now will count as a lost battle—are you sure you want to abandon the fight? 🏴‍☠️⚔️" : (isIslandCreator && islandInfo.invitee !== null
                   ? "⚠️ Coward's Retreat! Stopping the game after a player joins will count as a loss—looks like you feared the challenge! 🏴‍☠️😨"
                   : "Are you sure you want to stop the game? Your progress might be lost!")}
               </AlertDialogDescription>
@@ -109,4 +110,5 @@ interface StopGameProperties {
   islandInfo: Island | undefined;
   isIslandCreator: boolean;
   fromReady?: boolean;
+  fromStarted?: boolean;
 }

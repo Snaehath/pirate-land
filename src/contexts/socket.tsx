@@ -19,6 +19,9 @@ interface ServerToClientEvents {
   newMessage?: (data: Message) => void;
   placement?: () => void;
   startedGame?: (data: { roomId: string }) => void;
+  endedGame?: (data: { roomId: string }) => void;
+  captured?: (data: { position: number }) => void;
+  chanceUpdate?: (data: {playerId: string}) => void;
 }
 
 interface ClientToServerEvents {
@@ -28,6 +31,9 @@ interface ClientToServerEvents {
   newMessage?: (data: { roomId: string; msgObj: Message }) => void;
   placement?: (roomId: string) => void;
   startedGame?: (roomId: string) => void;
+  captured?: (data: { roomId: string; position: number }) => void;
+  chanceUpdate?: (data: {roomId: string, playerId: string}) => void;
+  endedGame?: (data: { roomId: string }) => void;
 }
 
 interface SocketContextInterface {

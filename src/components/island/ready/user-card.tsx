@@ -18,6 +18,9 @@ const UserCard: React.FC<UserCardProperties> = ({
   player,
   setPlayer,
   positions = [],
+  fromStarted,
+  captured = [],
+  captures = [],
 }) => {
   // hooks
   const { token, setLoadingText } = useAppContext();
@@ -139,12 +142,34 @@ const UserCard: React.FC<UserCardProperties> = ({
           alt={userAvatar.alt}
           className="w-52 self-center"
         />
-        <Typography className="font-pirate-kids tracking-widest self-center">
-          Placements Left
-        </Typography>
-        <Typography className="font-pirate-kids tracking-widest self-center">
-          {isOpponent ? (5 - opponentPositionsCount) : 5 - positions.length}
-        </Typography>
+        {/* placements */}
+        {!fromStarted && <>
+          <Typography className="font-pirate-kids tracking-widest self-center">
+            Placements Left
+          </Typography>
+          <Typography className="font-pirate-kids tracking-widest self-center">
+            {isOpponent ? (5 - opponentPositionsCount) : 5 - positions.length}
+          </Typography>
+        </>}
+        {/* stats */}
+        {fromStarted && !isOpponent && <>
+          <Typography className="font-pirate-kids tracking-widest self-center">
+            Captures
+          </Typography>
+          <Typography className="font-pirate-kids tracking-widest self-center">
+            {captures.length}
+            {" "}
+            / 5
+          </Typography>
+          <Typography className="font-pirate-kids tracking-widest self-center">
+            Captured
+          </Typography>
+          <Typography className="font-pirate-kids tracking-widest self-center">
+            {captured.length}
+            {" "}
+            / 5
+          </Typography>
+        </>}
         {isOpponent ? (
           <ChatContainer islandInfo={islandInfo} />
         ) : (
@@ -152,7 +177,8 @@ const UserCard: React.FC<UserCardProperties> = ({
             <StopGame
               islandInfo={islandInfo}
               isIslandCreator={islandInfo.creator === userId}
-              fromReady
+              fromReady={!fromStarted}
+              fromStarted={fromStarted}
             />
           </div>
         )}
@@ -170,4 +196,7 @@ interface UserCardProperties {
   setPlayer: Dispatch<SetStateAction<User | undefined>>;
   isOpponent?: boolean;
   positions: number[];
+  fromStarted?: boolean;
+  captures?: number[];
+  captured?: number[];
 }

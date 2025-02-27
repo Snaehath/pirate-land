@@ -161,7 +161,7 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
       <ScrollArea
         type="always"
         ref={scrollAreaReference}
-        className="pr-3 [&>[data-radix-scroll-area-viewport]]:max-h-28"
+        className="pr-3 [&>[data-radix-scroll-area-viewport]]:max-h-16"
       >
         <div className="flex flex-col gap-1">
           {page !== null && <Button
