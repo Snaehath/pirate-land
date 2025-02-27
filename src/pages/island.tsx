@@ -27,6 +27,7 @@ import { celeberate, cn, playAudio } from "@/lib/utils";
 import UserCard from "@/components/island/ready/user-card";
 import ReadyGameGrid from "@/components/island/ready/game-grid";
 import StartedGameGrid from "@/components/island/started-grid";
+import IslandScoreCard from "@/components/island/scorecard";
 
 const IslandPage: React.FC = () => {
   // hooks
@@ -324,6 +325,7 @@ const IslandPage: React.FC = () => {
     >
       <CardHeader
         className={cn(
+          islandInfo?.status === "ENDED" && "hidden",
           islandInfo?.status !== "CREATED" &&
             "rounded-base shadow-shadow border-2 border-border bg-main"
         )}
@@ -500,7 +502,7 @@ const IslandPage: React.FC = () => {
           )}
           {/* container for ended state */}
           {islandInfo?.status === "ENDED" && (
-            <div>scorecard here</div>)}
+            islandId && <IslandScoreCard  islandId={islandId} />)}
         </div>
       </CardContent>
       <CardFooter

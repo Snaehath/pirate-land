@@ -50,3 +50,10 @@ export type Message = {
   message: string;
   sender: string;
 };
+
+export type Scorecard = {
+  creator: string;
+  invitee: string;
+  creator_score: string;
+  invitee_score: string;
+};
