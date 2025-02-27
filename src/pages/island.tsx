@@ -25,6 +25,7 @@ import { useSocketContext } from "@/contexts/socket";
 import { useToast } from "@/hooks/use-toast";
 import { celeberate, cn, playAudio } from "@/lib/utils";
 import UserCard from "@/components/island/ready/user-card";
+import { GRID } from "@/data/components";
 
 const IslandPage: React.FC = () => {
   // hooks
@@ -248,7 +249,12 @@ const IslandPage: React.FC = () => {
               {/* user card */}
               <UserCard {...{islandInfo, userId}} />
               {/* game grid */}
-              <div></div>
+              <div className="shadow shadow-white border-4 p-1 border-dashed rounded-base bg-[url(./assets/images/bg.gif)] bg-no-repeat bg-cover grid grid-cols-10 grid-rows-7">
+                {GRID.map((v) => <div
+                  key={v}
+                  className="rounded-base shadow shadow-white hover:shadow-shadow cursor-pointer size-14"
+                ></div>)}
+              </div>
               {/* opponent card */}
               <UserCard
                 userId={islandInfo.creator === userId ? islandInfo.invitee ?? "" : islandInfo.creator}

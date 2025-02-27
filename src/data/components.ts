@@ -129,3 +129,5 @@ export const LEADERBOARD_ICONS: Avatar[] = [
     alt: "Black girl pirate kid",
   },
 ];
+
+export const GRID = Array.from({length: 70}).fill(Date.now()) as number[];
