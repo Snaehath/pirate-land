@@ -9,6 +9,7 @@ import { AVATARS } from "@/data/components";
 import StopGame from "../stop-game";
 import { Skeleton } from "@/components/ui/skeleton";
 import ChatContainer from "./chat-container";
+import { useSocketContext } from "@/contexts/socket";
 
 const UserCard: React.FC<UserCardProperties> = ({
   islandInfo,
@@ -20,9 +21,11 @@ const UserCard: React.FC<UserCardProperties> = ({
 }) => {
   // hooks
   const { token } = useAppContext();
+  const { socket } = useSocketContext();
 
   // states
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [opponentPositionsCount, setOpponentPositionsCount] = useState<number>(0);
 
   // local variables
   const userAvatar = AVATARS[player?.avatar ?? 0];
@@ -45,6 +48,37 @@ const UserCard: React.FC<UserCardProperties> = ({
     };
     fetchPlayer();
   }, [token, userId, setPlayer]);
+
+  // socket events
+  useEffect(() => {
+    if (
+      !isOpponent ||
+      !socket ||
+      token?.length === 0 ||
+      islandInfo.id.length === 0
+    )
+      return;
+
+    const handlePlacementUpdate = async () => {
+      try {
+        const {data} = await axios.get<{count: number}>(`/boards/positions-count/${islandInfo.id}/${userId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setOpponentPositionsCount(data.count);
+      } finally {
+        /* empty */
+      }
+    };
+
+    socket.off("placement", handlePlacementUpdate);
+    socket.on("placement", handlePlacementUpdate);
+
+    return () => {
+      socket.off("placement", handlePlacementUpdate);
+    };
+  }, [isOpponent, islandInfo.id, islandInfo.id.length, socket, token, token?.length, userId]);
 
   if (isLoading) {
     return (
@@ -76,7 +110,7 @@ const UserCard: React.FC<UserCardProperties> = ({
           Placements Left
         </Typography>
         <Typography className="font-pirate-kids tracking-widest self-center">
-          {isOpponent ? 5 : 5 - positions.length}
+          {isOpponent ? (5 - opponentPositionsCount) : 5 - positions.length}
         </Typography>
         {isOpponent ? (
           <ChatContainer islandInfo={islandInfo} />

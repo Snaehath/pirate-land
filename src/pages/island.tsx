@@ -260,6 +260,7 @@ const IslandPage: React.FC = () => {
               <ReadyGameGrid
                 positions={userPositions}
                 setPositions={setUserPositions}
+                islandId={islandInfo.id}
                 user={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
               />
               {/* opponent card */}

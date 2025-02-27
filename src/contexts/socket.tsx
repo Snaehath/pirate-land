@@ -17,6 +17,7 @@ interface ServerToClientEvents {
   playerLeft?: (data: { userId: string }) => void;
   readyGame?: (data: { roomId: string }) => void;
   newMessage?: (data: Message) => void;
+  placement?: () => void;
 }
 
 interface ClientToServerEvents {
@@ -24,6 +25,7 @@ interface ClientToServerEvents {
   leaveRoom?: (roomId: string) => void;
   readyGame?: (roomId: string) => void;
   newMessage?: (data: { roomId: string; msgObj: Message }) => void;
+  placement?: (roomId: string) => void;
 }
 
 interface SocketContextInterface {

@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import { Loader } from "lucide-react";
+import axios from "axios";
 
 // custom
 import { AVATARS_ICONS, GRID } from "@/data/components";
@@ -7,14 +8,19 @@ import { cn, playAudio } from "@/lib/utils";
 import { User } from "@/lib/types";
 import ToolTip from "@/components/tooltip";
 import { useToast } from "@/hooks/use-toast";
+import { useAppContext } from "@/contexts/app";
+import { useSocketContext } from "@/contexts/socket";
 
 const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
   user,
   positions,
   setPositions,
+  islandId
 }) => {
   // hooks
   const { toast } = useToast();
+  const { token } = useAppContext();
+  const { socket } = useSocketContext();
 
   // states
   const [currentUpdating, setCurrentUpdating] = useState<number[]>([]);
@@ -22,7 +28,9 @@ const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
   // local variables
   const avatar = AVATARS_ICONS[user?.avatar ?? 0];
 
-  const handleClick = (position: number) => {
+  const handleClick = async (position: number) => {
+    if (token?.length === 0 || !socket) return;
+
     // if position is updating stop
     if (currentUpdating.includes(position)) return;
 
@@ -53,15 +61,25 @@ const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
 
     playAudio("/audio/tree-hit.mp3");
 
-    setCurrentUpdating((previous) => [...previous, position]);
-    setTimeout(() => {
+    try {
+      setCurrentUpdating((previous) => [...previous, position]);
+      
+      await axios.put(`/boards/ready/${islandId}/${position}`, undefined, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
       setPositions((previous) =>
         previous.includes(position)
           ? previous.filter((v) => v !== position)
           : [...previous, position]
       );
+
+      socket.emit("placement", islandId);
+    } finally {
       setCurrentUpdating((previous) => previous.filter((v) => v !== position));
-    }, 2000);
+    }
   };
 
   return (
@@ -76,7 +94,8 @@ const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
             className={cn(
               "rounded-base shadow shadow-white hover:shadow-shadow cursor-pointer size-14",
               currentUpdating.includes(index) &&
-                "flex [&_img]:opacity-50 items-center justify-center cursor-not-allowed shadow-inner hover:shadow-none"
+                "flex [&_img]:opacity-50 items-center justify-center cursor-not-allowed shadow-inner hover:shadow-none",
+              positions.includes(index) && "bg-black/50",
             )}
           >
             {positions.includes(index) && (
@@ -101,4 +120,5 @@ interface ReadyGameGridProperties {
   user: User | undefined;
   positions: number[];
   setPositions: Dispatch<SetStateAction<number[]>>;
+  islandId: string;
 }
