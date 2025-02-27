@@ -20,7 +20,7 @@ const UserCard: React.FC<UserCardProperties> = ({
   positions = [],
 }) => {
   // hooks
-  const { token } = useAppContext();
+  const { token, setLoadingText } = useAppContext();
   const { socket } = useSocketContext();
 
   // states
@@ -88,6 +88,31 @@ const UserCard: React.FC<UserCardProperties> = ({
     };
   }, [isOpponent, islandInfo.id, islandInfo.id.length, socket, token, token?.length, userId]);
 
+  // when both players placed all their positions
+  // game can start
+  useEffect(() => {
+    if (!socket || islandInfo.status === "STARTED") return;
+    const startGame = async () => {
+      if (opponentPositionsCount === 5 && positions.length == 5) {
+        try {
+          setLoadingText!(
+            "Hoisting the Sails! ⛵ Preparing the game for battle... ⚔️🏴‍☠️"
+          );
+          await axios.put(`/islands/island-started/${islandInfo.id}`, undefined, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setLoadingText!(undefined);
+          socket.emit("startedGame", islandInfo.id);
+        } finally {
+          setLoadingText!(undefined);
+        }
+      }
+    };
+    startGame();
+  }, [islandInfo.id, islandInfo.status, opponentPositionsCount, positions.length, setLoadingText, socket, token]);
+
   if (isLoading) {
     return (
       <div className="flex flex-col items-center gap-3">
@@ -102,7 +127,7 @@ const UserCard: React.FC<UserCardProperties> = ({
 
   return (
     player !== undefined && (
-      <div className="flex flex-col">
+      <div className="flex flex-col rounded-base shadow-shadow border-2 border-border bg-main p-1 pb-2">
         <Typography
           variant="h3"
           className="font-pirate-kids tracking-widest self-center"
@@ -144,5 +169,5 @@ interface UserCardProperties {
   player: User | undefined;
   setPlayer: Dispatch<SetStateAction<User | undefined>>;
   isOpponent?: boolean;
-  positions?: number[];
+  positions: number[];
 }

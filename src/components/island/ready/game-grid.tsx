@@ -87,7 +87,7 @@ const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
   return (
     <div
       className={cn(
-        "shadow shadow-white border-2 p-0.5 border-dashed rounded-base bg-[url(./assets/images/bg.gif)] bg-no-repeat bg-cover grid grid-cols-10 grid-rows-7",
+        "rounded-base bg-[url(./assets/images/bg.gif)] bg-no-repeat bg-cover grid grid-cols-10 grid-rows-7",
         positionsFetching && "p-0"
       )}
     >

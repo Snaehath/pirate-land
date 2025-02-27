@@ -182,18 +182,37 @@ const IslandPage: React.FC = () => {
       });
     };
 
+    const handleGameStarted = (event: { roomId: string }) => {
+      // nothing to do when it is not the current island
+      if (
+        !islandInfoReference.current ||
+        islandInfoReference.current.id !== event.roomId
+      )
+        return;
+      islandInfoReference.current.status = "STARTED";
+      setIslandInfo((previous) =>
+        previous === undefined ? undefined : { ...previous, status: "STARTED" }
+      );
+      toast({
+        title: "Let the Battle Begin!!",
+      });
+    };
+
     socket.off("playerJoined", handlePlayerJoined);
     socket.off("playerLeft", handlePlayerLeft);
     socket.off("readyGame", handleGameReady);
+    socket.off("startedGame", handleGameStarted);
 
     socket.on("playerJoined", handlePlayerJoined);
     socket.on("playerLeft", handlePlayerLeft);
     socket.on("readyGame", handleGameReady);
+    socket.on("startedGame", handleGameStarted);
 
     return () => {
       socket.off("playerJoined", handlePlayerJoined);
       socket.off("playerLeft", handlePlayerLeft);
       socket.off("readyGame", handleGameReady);
+      socket.off("startedGame", handleGameStarted);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
@@ -240,8 +259,8 @@ const IslandPage: React.FC = () => {
   }
 
   return (
-    <Card className="self-center">
-      <CardHeader>
+    <Card className={cn("self-center", !isLoading && islandInfo?.status !== "CREATED" && "bg-transparent rounded-none shadow-none border-none p-0")}>
+      <CardHeader className={cn(islandInfo?.status !== "CREATED" &&  "rounded-base shadow-shadow border-2 border-border bg-main")}>
         <CardTitle className="text-center font-pirate-kids capitalize tracking-widest">
           {islandId?.split("-").join(" ")}
         </CardTitle>
@@ -250,7 +269,7 @@ const IslandPage: React.FC = () => {
             "🛡️ Strategic Prep Underway! The game will begin once all players have set their positions. ⚔️🏴‍☠️"}
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className={cn(islandInfo?.status !== "CREATED" && "p-0 pt-2")}>
         <div className="flex flex-col items-center">
           {isLoading && <Loader className="animate-spin self-center" />}
           {/* container for create state */}
@@ -313,15 +332,18 @@ const IslandPage: React.FC = () => {
                 {...{ islandInfo, userId }}
               />
               {/* game grid */}
-              <ReadyGameGrid
-                positions={userPositions}
-                setPositions={setUserPositions}
-                positionsFetching={positionsFetching}
-                islandId={islandInfo.id}
-                user={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
-              />
+              <div className="bg-main p-1 rounded-base shadow-shadow">
+                <ReadyGameGrid
+                  positions={userPositions}
+                  setPositions={setUserPositions}
+                  positionsFetching={positionsFetching}
+                  islandId={islandInfo.id}
+                  user={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
+                />
+              </div>
               {/* opponent card */}
               <UserCard
+                positions={userPositions}
                 setPlayer={
                   islandInfo.creator === userId
                     ? setInviteeInfo
