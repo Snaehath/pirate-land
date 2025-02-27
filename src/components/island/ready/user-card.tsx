@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 // custom
 import Typography from "@/components/typography";
@@ -14,12 +14,14 @@ const UserCard: React.FC<UserCardProperties> = ({
   islandInfo,
   userId,
   isOpponent,
+  player,
+  setPlayer,
+  positions = [],
 }) => {
   // hooks
   const { token } = useAppContext();
 
   // states
-  const [player, setPlayer] = useState<User>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // local variables
@@ -42,7 +44,7 @@ const UserCard: React.FC<UserCardProperties> = ({
       }
     };
     fetchPlayer();
-  }, [token, userId]);
+  }, [token, userId, setPlayer]);
 
   if (isLoading) {
     return (
@@ -70,15 +72,11 @@ const UserCard: React.FC<UserCardProperties> = ({
           alt={userAvatar.alt}
           className="w-52 self-center"
         />
-        <Typography
-          className="font-pirate-kids tracking-widest self-center"
-        >
+        <Typography className="font-pirate-kids tracking-widest self-center">
           Placements Left
         </Typography>
-        <Typography
-          className="font-pirate-kids tracking-widest self-center"
-        >
-          5
+        <Typography className="font-pirate-kids tracking-widest self-center">
+          {isOpponent ? 5 : 5 - positions.length}
         </Typography>
         {isOpponent ? (
           <ChatContainer islandInfo={islandInfo} />
@@ -101,5 +99,8 @@ export default UserCard;
 interface UserCardProperties {
   islandInfo: Island;
   userId: string;
+  player: User | undefined;
+  setPlayer: Dispatch<SetStateAction<User | undefined>>;
   isOpponent?: boolean;
+  positions?: number[];
 }

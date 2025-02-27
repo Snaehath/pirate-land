@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/card";
 import InviteFriend from "@/components/island/invite-friend";
 import StopGame from "@/components/island/stop-game";
-import { Island } from "@/lib/types";
+import { Island, User } from "@/lib/types";
 import UserInfo from "@/components/island/user-info";
 import { Button } from "@/components/ui/button";
 import ToolTip from "@/components/tooltip";
@@ -25,7 +25,7 @@ import { useSocketContext } from "@/contexts/socket";
 import { useToast } from "@/hooks/use-toast";
 import { celeberate, cn, playAudio } from "@/lib/utils";
 import UserCard from "@/components/island/ready/user-card";
-import { GRID } from "@/data/components";
+import ReadyGameGrid from "@/components/island/ready/game-grid";
 
 const IslandPage: React.FC = () => {
   // hooks
@@ -39,6 +39,9 @@ const IslandPage: React.FC = () => {
   // states
   const [islandInfo, setIslandInfo] = useState<Island>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [creatorInfo, setCreatorInfo] = useState<User>();
+  const [inviteeInfo, setInviteeInfo] = useState<User>();
+  const [userPositions, setUserPositions] = useState<number[]>([]);
 
   // local variables
   const isIslandCreator = islandInfoReference.current?.creator === userId;
@@ -247,16 +250,22 @@ const IslandPage: React.FC = () => {
           {islandInfo?.status === "READY" && (
             <div className="flex items-center gap-3">
               {/* user card */}
-              <UserCard {...{islandInfo, userId}} />
+              <UserCard
+                positions={userPositions}
+                setPlayer={islandInfo.creator === userId ? setCreatorInfo : setInviteeInfo}
+                player={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
+                {...{islandInfo, userId}}
+              />
               {/* game grid */}
-              <div className="shadow shadow-white border-4 p-1 border-dashed rounded-base bg-[url(./assets/images/bg.gif)] bg-no-repeat bg-cover grid grid-cols-10 grid-rows-7">
-                {GRID.map((v) => <div
-                  key={v}
-                  className="rounded-base shadow shadow-white hover:shadow-shadow cursor-pointer size-14"
-                ></div>)}
-              </div>
+              <ReadyGameGrid
+                positions={userPositions}
+                setPositions={setUserPositions}
+                user={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
+              />
               {/* opponent card */}
               <UserCard
+                setPlayer={islandInfo.creator === userId ? setInviteeInfo : setCreatorInfo}
+                player={islandInfo.creator === userId ? inviteeInfo : creatorInfo}
                 userId={islandInfo.creator === userId ? islandInfo.invitee ?? "" : islandInfo.creator}
                 isOpponent
                 islandInfo={islandInfo}
