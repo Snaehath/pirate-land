@@ -35,6 +35,12 @@ export type LeaderBoard = {
   totalPlayed: number;
 };
 
+export type HistoryBoard = {
+  islandId: string;
+  opponent: string;
+  result: string;
+};
+
 export type Island = {
   id: string;
   chance: string;
