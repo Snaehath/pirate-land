@@ -23,7 +23,7 @@ import ToolTip from "@/components/tooltip";
 import Typography from "@/components/typography";
 import { useSocketContext } from "@/contexts/socket";
 import { useToast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import { celeberate, cn, playAudio } from "@/lib/utils";
 import UserCard from "@/components/island/ready/user-card";
 
 const IslandPage: React.FC = () => {
@@ -123,6 +123,8 @@ const IslandPage: React.FC = () => {
           toast({
             title: "Victory Without a Fight! The opponent abandoned ship—you win this round!",
           });
+          celeberate();
+          playAudio("/audio/victory.mp3");
           socket.emit("leaveRoom", islandInfoReference.current.id);
           setIsland!("");
           navigate("/harbor");
@@ -134,6 +136,8 @@ const IslandPage: React.FC = () => {
         toast({
           title: "Victory Without a Fight! The opponent abandoned ship—you win this round!",
         });
+        celeberate();
+        playAudio("/audio/victory.mp3");
         socket.emit("leaveRoom", islandInfoReference.current.id);
         setIsland!("");
         navigate("/harbor");

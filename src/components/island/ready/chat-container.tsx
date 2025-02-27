@@ -1,5 +1,5 @@
 import { KeyboardEvent, ChangeEvent, useCallback, useEffect, useRef, useState } from "react";
-import { Loader, Send } from "lucide-react";
+import { Ellipsis, Loader, Send } from "lucide-react";
 import axios from "axios";
 import { formatDate, formatDistanceToNow } from "date-fns";
 
@@ -11,7 +11,7 @@ import ToolTip from "@/components/tooltip";
 import { Island, Message } from "@/lib/types";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useAppContext } from "@/contexts/app";
-import { cn, getDateObject } from "@/lib/utils";
+import { cn, getDateObject, playAudio } from "@/lib/utils";
 import { useSocketContext } from "@/contexts/socket";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -32,6 +32,30 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
   const handleMessageChange = (event: ChangeEvent<HTMLInputElement>) => {
     setMessage(event.target.value);
   };
+
+  const scrollToBottom = useCallback(() => {
+    if (!scrollAreaReference.current) return;
+  
+    requestAnimationFrame(() => {
+      const viewport = scrollAreaReference.current?.querySelector(
+        "[data-radix-scroll-area-viewport]"
+      ) as HTMLElement;
+  
+      if (viewport) {
+        viewport.scrollTo({
+          top: viewport.scrollHeight,
+          behavior: "smooth",
+        });
+  
+        setTimeout(() => {
+          viewport.scrollTo({
+            top: viewport.scrollHeight,
+            behavior: "instant",
+          });
+        }, 500); // Reduced timeout to prevent jank
+      }
+    });
+  }, []);
 
   const handleMessageSend = async () => {
     try {
@@ -59,7 +83,9 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
         id: getDateObject(newMessage.id).toISOString(),
       };
       setMessages((previous) => [...previous, newMessage]);
+      scrollToBottom();
       setMessage("");
+      playAudio("/audio/pop.mp3");
       socket.emit("newMessage", {
         roomId: islandInfo.id,
         msgObj: newMessage,
@@ -84,7 +110,7 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      setMessages((previous) => [...data.messages, ...previous]);
+      setMessages((previous) => [...(data.messages).reverse(), ...previous]);
       setPage(data.pageState);
       setFetching(false);
     } finally {
@@ -103,31 +129,8 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
   useEffect(() => {
     if (firstFetched) return;
     setFirstFetched(true);
-    fetchMessages();
-  }, [fetchMessages, firstFetched]);
-
-  // scrolling to bottom on messages update
-  useEffect(() => {
-    const scrollToBottom = () => {
-      if (scrollAreaReference.current) {
-        // Get the viewport element (the actual scrollable container)
-        const viewport = scrollAreaReference.current.querySelector(
-          "[data-radix-scroll-area-viewport]"
-        ) as HTMLElement;
-        if (viewport) {
-          // Add smooth scrolling behavior
-          viewport.style.scrollBehavior = "smooth";
-          // Scroll to the bottom
-          viewport.scrollTop = viewport.scrollHeight;
-          // Optional: Reset scroll behavior after animation
-          setTimeout(() => {
-            viewport.style.scrollBehavior = "auto";
-          }, 1000);
-        }
-      }
-    };
-    scrollToBottom();
-  }, [messages]);
+    fetchMessages().then(() => scrollToBottom());
+  }, [fetchMessages, firstFetched, scrollToBottom]);
 
   // listening to socket events
   useEffect(() => {
@@ -135,6 +138,8 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
 
     const handleNewMessage = (event: Message) => {
       setMessages((previous) => [...previous, event]);
+      scrollToBottom();
+      playAudio("/audio/pop.mp3");
     };
 
     socket.off("newMessage", handleNewMessage);
@@ -143,7 +148,7 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
     return () => {
       socket.off("newMessage", handleNewMessage);
     };
-  }, [socket]);
+  }, [socket, scrollToBottom]);
 
   return (
     <div className="flex flex-col gap-1">
@@ -159,6 +164,14 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
         className="pr-3 [&>[data-radix-scroll-area-viewport]]:max-h-32"
       >
         <div className="flex flex-col gap-1">
+          {page !== null && <Button
+            onClick={fetchMessages}
+            size="sm"
+            className="font-pirate-kids self-center"
+          >
+            <Ellipsis />
+            Show previous messages
+          </Button>}
           {fetching &&
             [..."1234"].map((v) => (
               <Skeleton
@@ -173,7 +186,7 @@ const ChatContainer: React.FC<ChatContainerProperties> = ({ islandInfo }) => {
             <div
               key={message_.id}
               className={cn(
-                "flex flex-col max-w-48 self-start bg-bg rounded-base px-2 py-1 border-2 border-border",
+                "animate-fade-in flex flex-col max-w-48 self-start bg-bg rounded-base px-2 py-1 border-2 border-border",
                 userId !== message_.sender && "self-end bg-bw"
               )}
             >

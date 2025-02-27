@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn, playAudio } from "@/lib/utils";
 
 const buttonVariants = cva(
   "animate-fade-in inline-flex items-center justify-center whitespace-nowrap rounded-base text-sm font-base ring-offset-white transition-all gap-2 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 disabled:pointer-events-none disabled:opacity-50",
@@ -48,8 +48,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProperties>(
     const handleClick = (
       event: React.MouseEvent<HTMLButtonElement, MouseEvent>
     ) => {
-      const audio = new Audio("/audio/tree-hit.mp3");
-      audio.play();
+      playAudio("/audio/tree-hit.mp3");
       if (onClick) {
         onClick(event);
       }
