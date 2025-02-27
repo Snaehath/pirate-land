@@ -10,12 +10,14 @@ import ToolTip from "@/components/tooltip";
 import { useToast } from "@/hooks/use-toast";
 import { useAppContext } from "@/contexts/app";
 import { useSocketContext } from "@/contexts/socket";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
   user,
   positions,
   setPositions,
-  islandId
+  islandId,
+  positionsFetching,
 }) => {
   // hooks
   const { toast } = useToast();
@@ -63,13 +65,13 @@ const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
 
     try {
       setCurrentUpdating((previous) => [...previous, position]);
-      
+
       await axios.put(`/boards/ready/${islandId}/${position}`, undefined, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      
+
       setPositions((previous) =>
         previous.includes(position)
           ? previous.filter((v) => v !== position)
@@ -83,33 +85,47 @@ const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
   };
 
   return (
-    <div className="shadow shadow-white border-2 p-0.5 border-dashed rounded-base bg-[url(./assets/images/bg.gif)] bg-no-repeat bg-cover grid grid-cols-10 grid-rows-7">
-      {GRID.map((v, index) => (
-        <ToolTip
-          key={v}
-          content={positions.includes(index) ? "Remove pirate" : "Place pirate"}
-        >
-          <div
-            onClick={() => handleClick(index)}
-            className={cn(
-              "rounded-base shadow shadow-white hover:shadow-shadow cursor-pointer size-14",
-              currentUpdating.includes(index) &&
-                "flex [&_img]:opacity-50 items-center justify-center cursor-not-allowed shadow-inner hover:shadow-none",
-              positions.includes(index) && "bg-black/50",
-            )}
+    <div
+      className={cn(
+        "shadow shadow-white border-2 p-0.5 border-dashed rounded-base bg-[url(./assets/images/bg.gif)] bg-no-repeat bg-cover grid grid-cols-10 grid-rows-7",
+        positionsFetching && "p-0"
+      )}
+    >
+      {GRID.map((v, index) =>
+        positionsFetching ? (
+          <Skeleton
+            key={v}
+            className="size-14 rounded-none"
+          />
+        ) : (
+          <ToolTip
+            key={v}
+            content={
+              positions.includes(index) ? "Remove pirate" : "Place pirate"
+            }
           >
-            {positions.includes(index) && (
-              <img
-                src={avatar.img}
-                alt={avatar.alt}
-              />
-            )}
-            {currentUpdating.includes(index) && (
-              <Loader className="absolute animate-spin" />
-            )}
-          </div>
-        </ToolTip>
-      ))}
+            <div
+              onClick={() => handleClick(index)}
+              className={cn(
+                "rounded-base shadow shadow-white hover:shadow-shadow cursor-pointer size-14",
+                currentUpdating.includes(index) &&
+                  "flex [&_img]:opacity-50 items-center justify-center cursor-not-allowed shadow-inner hover:shadow-none",
+                positions.includes(index) && "bg-black/50"
+              )}
+            >
+              {positions.includes(index) && (
+                <img
+                  src={avatar.img}
+                  alt={avatar.alt}
+                />
+              )}
+              {currentUpdating.includes(index) && (
+                <Loader className="absolute animate-spin" />
+              )}
+            </div>
+          </ToolTip>
+        )
+      )}
     </div>
   );
 };
@@ -121,4 +137,5 @@ interface ReadyGameGridProperties {
   positions: number[];
   setPositions: Dispatch<SetStateAction<number[]>>;
   islandId: string;
+  positionsFetching: boolean;
 }

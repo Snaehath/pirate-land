@@ -33,7 +33,8 @@ const IslandPage: React.FC = () => {
   const { socket } = useSocketContext();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const { authChecking, token, island, userId, setIsland, setLoadingText } = useAppContext();
+  const { authChecking, token, island, userId, setIsland, setLoadingText } =
+    useAppContext();
   const islandInfoReference = useRef<Island>(undefined);
 
   // states
@@ -42,6 +43,7 @@ const IslandPage: React.FC = () => {
   const [creatorInfo, setCreatorInfo] = useState<User>();
   const [inviteeInfo, setInviteeInfo] = useState<User>();
   const [userPositions, setUserPositions] = useState<number[]>([]);
+  const [positionsFetching, setPositionsFetching] = useState<boolean>(false);
 
   // local variables
   const isIslandCreator = islandInfoReference.current?.creator === userId;
@@ -49,7 +51,9 @@ const IslandPage: React.FC = () => {
   const handleReadyGame = async () => {
     if (!islandInfoReference.current || token?.length === 0 || !socket) return;
     try {
-      setLoadingText!("Hoisting the Sails! ⛵ Preparing the game for battle... ⚔️🏴‍☠️");
+      setLoadingText!(
+        "Hoisting the Sails! ⛵ Preparing the game for battle... ⚔️🏴‍☠️"
+      );
       await axios.put(`/islands/island-ready/${islandId}`, undefined, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -57,7 +61,9 @@ const IslandPage: React.FC = () => {
       });
       setLoadingText!(undefined);
       islandInfoReference.current.status = "READY";
-      setIslandInfo(previous => previous === undefined ? previous : {...previous, status: "READY"});
+      setIslandInfo((previous) =>
+        previous === undefined ? previous : { ...previous, status: "READY" }
+      );
       socket.emit("readyGame", islandInfoReference.current.id);
     } finally {
       setLoadingText!(undefined);
@@ -93,21 +99,28 @@ const IslandPage: React.FC = () => {
   useEffect(() => {
     if (!socket) return;
 
-    const handlePlayerJoined = (event: {userId: string}) => {
+    const handlePlayerJoined = (event: { userId: string }) => {
       // nothing to do if creator joined
-      if (!islandInfoReference.current || event.userId === islandInfoReference.current?.creator)
+      if (
+        !islandInfoReference.current ||
+        event.userId === islandInfoReference.current?.creator
+      )
         return;
 
       // update island info when invitee joined
       islandInfoReference.current.invitee = event.userId;
-      setIslandInfo(previous => previous === undefined ? undefined : {...previous, invitee: event.userId});
+      setIslandInfo((previous) =>
+        previous === undefined
+          ? undefined
+          : { ...previous, invitee: event.userId }
+      );
 
       toast({
         title: "A player joined the game",
       });
     };
 
-    const handlePlayerLeft = (event: {userId: string}) => {
+    const handlePlayerLeft = (event: { userId: string }) => {
       if (!islandInfoReference.current) return;
 
       // when invitee left
@@ -116,16 +129,20 @@ const IslandPage: React.FC = () => {
         // means invitee lost
         if (islandInfoReference.current.status === "CREATED") {
           toast({
-            title: "Matey Has Fled! Waiting for another challenger to join the battle...",
+            title:
+              "Matey Has Fled! Waiting for another challenger to join the battle...",
             variant: "destructive",
           });
           // eslint-disable-next-line unicorn/no-null
           islandInfoReference.current.invitee = null;
-          // eslint-disable-next-line unicorn/no-null
-          setIslandInfo(previous => previous === undefined ? undefined : {...previous, invitee: null});
+          setIslandInfo((previous) =>
+            // eslint-disable-next-line unicorn/no-null
+            previous === undefined ? undefined : { ...previous, invitee: null }
+          );
         } else {
           toast({
-            title: "Victory Without a Fight! The opponent abandoned ship—you win this round!",
+            title:
+              "Victory Without a Fight! The opponent abandoned ship—you win this round!",
           });
           celeberate();
           playAudio("/audio/victory.mp3");
@@ -138,7 +155,8 @@ const IslandPage: React.FC = () => {
       // when creator left
       if (event.userId === islandInfoReference.current.creator) {
         toast({
-          title: "Victory Without a Fight! The opponent abandoned ship—you win this round!",
+          title:
+            "Victory Without a Fight! The opponent abandoned ship—you win this round!",
         });
         celeberate();
         playAudio("/audio/victory.mp3");
@@ -150,9 +168,15 @@ const IslandPage: React.FC = () => {
 
     const handleGameReady = (event: { roomId: string }) => {
       // nothing to do when it is not the current island
-      if (!islandInfoReference.current || islandInfoReference.current.id !== event.roomId) return;
+      if (
+        !islandInfoReference.current ||
+        islandInfoReference.current.id !== event.roomId
+      )
+        return;
       islandInfoReference.current.status = "READY";
-      setIslandInfo(previous => previous === undefined ? undefined : {...previous, status: "READY"});
+      setIslandInfo((previous) =>
+        previous === undefined ? undefined : { ...previous, status: "READY" }
+      );
       toast({
         title: "The creator has started the game. Get ready for battle!",
       });
@@ -171,8 +195,33 @@ const IslandPage: React.FC = () => {
       socket.off("playerLeft", handlePlayerLeft);
       socket.off("readyGame", handleGameReady);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [socket]);
+
+  // fetch user positions in ready mode
+  useEffect(() => {
+    const fetchUserPositions = async () => {
+      if (
+        islandInfo?.status !== "READY" ||
+        token?.length === 0 ||
+        islandId === undefined ||
+        islandId.length === 0
+      )
+        return;
+      try {
+        setPositionsFetching(true);
+        const {data} = await axios.get<{positions: number[]}>(`/boards/positions/${islandInfo.id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        setUserPositions(data.positions);
+      } finally {
+        setPositionsFetching(false);
+      }
+    };
+    fetchUserPositions();
+  }, [islandId, islandInfo, token]);
 
   if (authChecking) {
     return <SuspenseLoader />;
@@ -197,7 +246,8 @@ const IslandPage: React.FC = () => {
           {islandId?.split("-").join(" ")}
         </CardTitle>
         <CardDescription className="text-center animate-pulse">
-          {islandInfo?.status === "READY" && "🛡️ Strategic Prep Underway! The game will begin once all players have set their positions. ⚔️🏴‍☠️"}
+          {islandInfo?.status === "READY" &&
+            "🛡️ Strategic Prep Underway! The game will begin once all players have set their positions. ⚔️🏴‍☠️"}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -252,22 +302,39 @@ const IslandPage: React.FC = () => {
               {/* user card */}
               <UserCard
                 positions={userPositions}
-                setPlayer={islandInfo.creator === userId ? setCreatorInfo : setInviteeInfo}
-                player={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
-                {...{islandInfo, userId}}
+                setPlayer={
+                  islandInfo.creator === userId
+                    ? setCreatorInfo
+                    : setInviteeInfo
+                }
+                player={
+                  islandInfo.creator === userId ? creatorInfo : inviteeInfo
+                }
+                {...{ islandInfo, userId }}
               />
               {/* game grid */}
               <ReadyGameGrid
                 positions={userPositions}
                 setPositions={setUserPositions}
+                positionsFetching={positionsFetching}
                 islandId={islandInfo.id}
                 user={islandInfo.creator === userId ? creatorInfo : inviteeInfo}
               />
               {/* opponent card */}
               <UserCard
-                setPlayer={islandInfo.creator === userId ? setInviteeInfo : setCreatorInfo}
-                player={islandInfo.creator === userId ? inviteeInfo : creatorInfo}
-                userId={islandInfo.creator === userId ? islandInfo.invitee ?? "" : islandInfo.creator}
+                setPlayer={
+                  islandInfo.creator === userId
+                    ? setInviteeInfo
+                    : setCreatorInfo
+                }
+                player={
+                  islandInfo.creator === userId ? inviteeInfo : creatorInfo
+                }
+                userId={
+                  islandInfo.creator === userId
+                    ? (islandInfo.invitee ?? "")
+                    : islandInfo.creator
+                }
                 isOpponent
                 islandInfo={islandInfo}
               />
@@ -275,7 +342,12 @@ const IslandPage: React.FC = () => {
           )}
         </div>
       </CardContent>
-      <CardFooter className={cn("flex items-center justify-between gap-3", islandInfo?.status === "READY" && "hidden")}>
+      <CardFooter
+        className={cn(
+          "flex items-center justify-between gap-3",
+          islandInfo?.status === "READY" && "hidden"
+        )}
+      >
         <StopGame {...{ isIslandCreator, islandInfo }} />
         {isIslandCreator && islandInfo?.invitee === null && (
           <>

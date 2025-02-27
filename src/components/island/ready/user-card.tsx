@@ -42,12 +42,20 @@ const UserCard: React.FC<UserCardProperties> = ({
           },
         });
         setPlayer(data);
+        if (isOpponent) {
+          const {data} = await axios.get<{count: number}>(`/boards/positions-count/${islandInfo.id}/${userId}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          });
+          setOpponentPositionsCount(data.count);
+        }
       } finally {
         setIsLoading(false);
       }
     };
     fetchPlayer();
-  }, [token, userId, setPlayer]);
+  }, [token, userId, setPlayer, isOpponent, islandInfo.id]);
 
   // socket events
   useEffect(() => {

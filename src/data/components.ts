@@ -130,4 +130,4 @@ export const LEADERBOARD_ICONS: Avatar[] = [
   },
 ];
 
-export const GRID = Array.from({length: 70}).fill(Date.now()) as number[];
+export const GRID = Array.from({length: 70}).fill(Date.now()).map((_, index) => index) as number[];
