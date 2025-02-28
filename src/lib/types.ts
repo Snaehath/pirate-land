@@ -62,4 +62,5 @@ export type History = {
   id: string;
   opponent: string;
   status: "WON" | "LOST";
+  island_id: string;
 };

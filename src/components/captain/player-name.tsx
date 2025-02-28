@@ -1,22 +1,21 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Crown } from "lucide-react";
+import { Sword } from "lucide-react";
 
 // custom
 import { Button } from "../ui/button";
-import { User } from "@/lib/types";
-import { AVATARS_ICONS } from "@/data/components";
 import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "../ui/skeleton";
 import ToolTip from "../tooltip";
+import { User } from "@/lib/types";
 
-const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
+const PlayerName: React.FC<PlayerNameProperties> = ({ playerId }) => {
   // hooks
   const { token, userId } = useAppContext();
 
   // states
-  const [player, setPlayer] = useState<User>();
+  const [player, setPlayer] = useState<Omit<User, "avatar">>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   // fetch user info
@@ -25,7 +24,7 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
       if (token?.length === 0) return;
       try {
         setIsLoading(true);
-        const { data } = await axios.get(`/users/${playerId}`, {
+        const { data } = await axios.get(`/users/${playerId}/name`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -57,21 +56,16 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
           variant="noShadow"
           className="border-none transition-transform transform hover:scale-110 underline underline-offset-4"
         >
-          <img
-            src={AVATARS_ICONS[player.avatar].img}
-            alt={AVATARS_ICONS[player.avatar].alt}
-            className="w-20"
-          />
           {player.name}
-          {userId === playerId && <ToolTip content="You"><div><Crown /></div></ToolTip>}
+          {userId === playerId && <ToolTip content="You"><div><Sword /></div></ToolTip>}
         </Button>
       </Link>
     )
   );
 };
 
-export default PlayerCard;
+export default PlayerName;
 
-interface PlayerCardProperties {
+interface PlayerNameProperties {
   playerId: string;
 }

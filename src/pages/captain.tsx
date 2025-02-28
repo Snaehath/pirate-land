@@ -132,7 +132,7 @@ const CaptainPage: React.FC = () => {
           Captain Profile
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex items-center gap-3">
+      <CardContent className="flex items-center gap-5">
         {/* profile section */}
         <div className="flex flex-col gap-3">
           {/* name */}
@@ -170,12 +170,12 @@ const CaptainPage: React.FC = () => {
         </div>
         {/* history table */}
         {id && <div className="flex flex-col gap-3">
-          <Typography className="font-pirate-kids text-center">Captain's Alibi</Typography>
+          <Typography className="font-pirate-kids text-center">Alibi</Typography>
           <HistoryTable playerId={id} />
         </div>}
       </CardContent>
       {!fetching && isUpdated && (
-        <CardFooter className="flex items-center gap-3 justify-end">
+        <CardFooter className="flex items-center gap-3 justify-start">
           <Button
             disabled={updating}
             onClick={discardChanges}

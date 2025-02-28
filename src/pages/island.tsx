@@ -1,7 +1,7 @@
 import { Navigate, useNavigate, useParams } from "react-router";
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { HandCoins, Loader, Swords } from "lucide-react";
+import { Goal, HandCoins, Loader, Swords } from "lucide-react";
 
 // custom
 import SuspenseLoader from "@/components/suspense-loader";
@@ -369,6 +369,18 @@ const IslandPage: React.FC = () => {
                     Anchors Down! ⚓ Waiting for the Game to Begin... ⏳
                   </Typography>
                 )}
+                <ToolTip content="Coming Soon">
+                  <div>
+                    <Button
+                      variant="neutral"
+                      className="font-pirate-kids"
+                      disabled
+                    >
+                      <Goal />
+                      Challenge Opponent
+                    </Button>
+                  </div>
+                </ToolTip>
                 <ToolTip content="Coming Soon">
                   <div>
                     <Button
