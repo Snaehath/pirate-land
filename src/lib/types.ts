@@ -57,3 +57,9 @@ export type Scorecard = {
   creator_score: string;
   invitee_score: string;
 };
+
+export type History = {
+  id: string;
+  opponent: string;
+  status: "WON" | "LOST";
+};

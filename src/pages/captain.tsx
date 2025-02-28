@@ -21,6 +21,7 @@ import { useAppContext } from "@/contexts/app";
 import SuspenseLoader from "@/components/suspense-loader";
 import { Skeleton } from "@/components/ui/skeleton";
 import CaptainAvatar from "@/components/captain/avatar";
+import HistoryTable from "@/components/captain/history";
 
 const CaptainPage: React.FC = () => {
   // hooks
@@ -131,7 +132,8 @@ const CaptainPage: React.FC = () => {
           Captain Profile
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex items-center gap-3">
+        {/* profile section */}
         <div className="flex flex-col gap-3">
           {/* name */}
           <div className="flex flex-col items-center gap-1">
@@ -166,6 +168,11 @@ const CaptainPage: React.FC = () => {
             ))}
           </div>
         </div>
+        {/* history table */}
+        {id && <div className="flex flex-col gap-3">
+          <Typography className="font-pirate-kids text-center">Captain's Alibi</Typography>
+          <HistoryTable playerId={id} />
+        </div>}
       </CardContent>
       {!fetching && isUpdated && (
         <CardFooter className="flex items-center gap-3 justify-end">
