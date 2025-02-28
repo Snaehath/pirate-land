@@ -130,4 +130,97 @@ export const LEADERBOARD_ICONS: Avatar[] = [
   },
 ];
 
+export const AVATARS_BLUE: Avatar[] = [
+  {
+    img: "/avatars-blue/boy-mammoth.png",
+    alt: "Boy mammoth kid",
+  },
+  {
+    img: "/avatars-blue/girl-mammoth.png",
+    alt: "Girl mammoth kid",
+  },
+  {
+    img: "/avatars-blue/rainbow-mammoth.png",
+    alt: "Rainbow mammoth kid",
+  },
+  {
+    img: "/avatars-blue/white-boy.png",
+    alt: "White boy pirate kid",
+  },
+  {
+    img: "/avatars-blue/white-girl.png",
+    alt: "White girl pirate kid",
+  },
+  {
+    img: "/avatars-blue/black-boy.png",
+    alt: "Black boy pirate kid",
+  },
+  {
+    img: "/avatars-blue/black-girl.png",
+    alt: "Black girl pirate kid",
+  },
+];
+
+export const AVATARS_ICONS_BLUE: Avatar[] = [
+  {
+    img: "/avatars-blue/boy-mammoth-icon.png",
+    alt: "Boy mammoth icon",
+  },
+  {
+    img: "/avatars-blue/girl-mammoth-icon.png",
+    alt: "Girl mammoth icon",
+  },
+  {
+    img: "/avatars-blue/rainbow-mammoth-icon.png",
+    alt: "Rainbow mammoth icon",
+  },
+  {
+    img: "/avatars-blue/white-boy-icon.png",
+    alt: "White boy pirate kid icon",
+  },
+  {
+    img: "/avatars-blue/white-girl-icon.png",
+    alt: "White girl pirate kid icon",
+  },
+  {
+    img: "/avatars-blue/black-boy-icon.png",
+    alt: "Black boy pirate kid icon",
+  },
+  {
+    img: "/avatars-blue/black-girl-icon.png",
+    alt: "Black girl pirate kid icon",
+  },
+];
+
+export const LEADERBOARD_ICONS_BLUE: Avatar[] = [
+  {
+    img: "/avatars-blue/boy-mammoth-icon.png",
+    alt: "Boy mammoth",
+  },
+  {
+    img: "/avatars-blue/girl-mammoth-icon.png",
+    alt: "Girl mammoth",
+  },
+  {
+    img: "/avatars-blue/rainbow-mammoth-icon.png",
+    alt: "Rainbow mammoth",
+  },
+  {
+    img: "/avatars-blue/white-boy-icon.png",
+    alt: "White boy pirate kid",
+  },
+  {
+    img: "/avatars-blue/white-girl-icon.png",
+    alt: "White girl pirate kid",
+  },
+  {
+    img: "/avatars-blue/black-boy-icon.png",
+    alt: "Black boy pirate kid",
+  },
+  {
+    img: "/avatars-blue/black-girl-icon.png",
+    alt: "Black girl pirate kid",
+  },
+];
+
 export const GRID = Array.from({length: 70}).fill(Date.now()).map((_, index) => index) as number[];

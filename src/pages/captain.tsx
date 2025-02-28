@@ -13,7 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { AVATARS } from "@/data/components";
+import { AVATARS as AVATARS_RED, AVATARS_BLUE } from "@/data/components";
 import { User } from "@/lib/types";
 import { Input } from "@/components/ui/input";
 import Typography from "@/components/typography";
@@ -39,8 +39,9 @@ const CaptainPage: React.FC = () => {
   const [updating, setUpdating] = useState<boolean>(false);
 
   // local variables
-  const avatarObject = AVATARS[avatar];
   const isOwner = id === userId;
+  const AVATARS = isOwner ? AVATARS_RED : AVATARS_BLUE;
+  const avatarObject = AVATARS[avatar];
   const isUpdated = isOwner && (avatar !== userData?.avatar || name !== userData.name);
 
   const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {

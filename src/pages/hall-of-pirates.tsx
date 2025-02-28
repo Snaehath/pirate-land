@@ -137,24 +137,24 @@ const HallOfPiratesPage: React.FC = () => {
         </Table>
       </CardContent>
       <CardFooter className="flex justify-center gap-3">
-        <Button
-          size={"sm"}
-          onClick={handlePrevious}
-          disabled={startIndex === 0}
-        >
-          <ArrowBigLeft />
-          Prev
-        </Button>
-        <Button
-          size={"sm"}
-          onClick={handleNext}
-          disabled={
-            startIndex + HALL_OF_PIRATES_PAGE_SIZE >= leaderboard.length
-          }
-        >
-          Next
-          <ArrowBigRight />
-        </Button>
+        {!isLoading && <>
+          <Button
+            size={"sm"}
+            onClick={handlePrevious}
+            disabled={startIndex === 0}
+          >
+            <ArrowBigLeft />
+            Prev
+          </Button>
+          <Button
+            size={"sm"}
+            onClick={handleNext}
+            disabled={startIndex + HALL_OF_PIRATES_PAGE_SIZE >= history.length}
+          >
+            Next
+            <ArrowBigRight />
+          </Button>
+        </>}
       </CardFooter>
     </Card>
   );

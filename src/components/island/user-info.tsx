@@ -6,18 +6,19 @@ import { Crown, Loader } from "lucide-react";
 import { User } from "@/lib/types";
 import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "../ui/skeleton";
-import { AVATARS } from "@/data/components";
+import { AVATARS as AVATARS_RED, AVATARS_BLUE } from "@/data/components";
 import Typography from "../typography";
 
 const UserInfo: React.FC<UserInfoProperties> = ({ userId, isCreator }) => {
   // hooks
-  const { token } = useAppContext();
+  const { token, userId: currentUserId } = useAppContext();
 
   // states
   const [player, setPlayer] = useState<User>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // local variables
+  const AVATARS = currentUserId === userId ? AVATARS_RED : AVATARS_BLUE;
   const userAvatar = AVATARS[player?.avatar ?? 0];
 
   // fetch user info

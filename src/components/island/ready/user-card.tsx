@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import Typography from "@/components/typography";
 import { useAppContext } from "@/contexts/app";
 import { Island, User } from "@/lib/types";
-import { AVATARS } from "@/data/components";
+import { AVATARS as AVATARS_RED, AVATARS_BLUE } from "@/data/components";
 import StopGame from "../stop-game";
 import { Skeleton } from "@/components/ui/skeleton";
 import ChatContainer from "./chat-container";
@@ -23,7 +23,7 @@ const UserCard: React.FC<UserCardProperties> = ({
   captures = [],
 }) => {
   // hooks
-  const { token, setLoadingText } = useAppContext();
+  const { token, setLoadingText, userId: currentUserId } = useAppContext();
   const { socket } = useSocketContext();
 
   // states
@@ -31,6 +31,7 @@ const UserCard: React.FC<UserCardProperties> = ({
   const [opponentPositionsCount, setOpponentPositionsCount] = useState<number>(0);
 
   // local variables
+  const AVATARS = currentUserId === player?.id ? AVATARS_RED : AVATARS_BLUE;
   const userAvatar = AVATARS[player?.avatar ?? 0];
 
   // fetch user info

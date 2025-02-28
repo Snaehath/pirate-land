@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import ToolTip from "../tooltip";
 import { formatDate, formatDistanceToNow } from "date-fns";
 import PlayerName from "./player-name";
+import { Skeleton } from "../ui/skeleton";
 
 const HistoryTable: React.FC<HistoryTableProperties> = ({ playerId }) => {
   // hooks
@@ -78,6 +79,16 @@ const HistoryTable: React.FC<HistoryTableProperties> = ({ playerId }) => {
           </TableRow>
         </TableHeader>
         <TableBody className="font-pirate-kids">
+          {isLoading &&
+              [..."123"].map((v) => (
+                <TableRow key={v}>
+                  {[..."1234"].map((v1) => (
+                    <TableCell key={`${v}-${v1}`}>
+                      <Skeleton className="h-7" />
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
           {!isLoading &&
             visibleData.map((historyItem) => (
               <TableRow key={historyItem.id}>
@@ -115,22 +126,28 @@ const HistoryTable: React.FC<HistoryTableProperties> = ({ playerId }) => {
         </TableBody>
       </Table>
       <div className="flex justify-center gap-3">
-        <Button
-          size={"sm"}
-          onClick={handlePrevious}
-          disabled={startIndex === 0}
-        >
-          <ArrowBigLeft />
-          Prev
-        </Button>
-        <Button
-          size={"sm"}
-          onClick={handleNext}
-          disabled={startIndex + HALL_OF_PIRATES_PAGE_SIZE >= history.length}
-        >
-          Next
-          <ArrowBigRight />
-        </Button>
+        {isLoading && <>
+          <Skeleton className="w-16 h-8" />
+          <Skeleton className="w-16 h-8" />
+        </>}
+        {!isLoading && <>
+          <Button
+            size={"sm"}
+            onClick={handlePrevious}
+            disabled={startIndex === 0}
+          >
+            <ArrowBigLeft />
+            Prev
+          </Button>
+          <Button
+            size={"sm"}
+            onClick={handleNext}
+            disabled={startIndex + HALL_OF_PIRATES_PAGE_SIZE >= history.length}
+          >
+            Next
+            <ArrowBigRight />
+          </Button>
+        </>}
       </div>
     </>
   );

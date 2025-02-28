@@ -3,7 +3,7 @@ import { Loader } from "lucide-react";
 import axios from "axios";
 
 // custom
-import { AVATARS_ICONS, GRID } from "@/data/components";
+import { AVATARS_ICONS as AVATARS_ICONS_RED, GRID, AVATARS_ICONS_BLUE } from "@/data/components";
 import { cn, playAudio } from "@/lib/utils";
 import { User } from "@/lib/types";
 import ToolTip from "@/components/tooltip";
@@ -21,13 +21,14 @@ const ReadyGameGrid: React.FC<ReadyGameGridProperties> = ({
 }) => {
   // hooks
   const { toast } = useToast();
-  const { token } = useAppContext();
+  const { token, userId } = useAppContext();
   const { socket } = useSocketContext();
 
   // states
   const [currentUpdating, setCurrentUpdating] = useState<number[]>([]);
 
   // local variables
+  const AVATARS_ICONS = userId === user?.id ? AVATARS_ICONS_RED : AVATARS_ICONS_BLUE;
   const avatar = AVATARS_ICONS[user?.avatar ?? 0];
 
   const handleClick = async (position: number) => {

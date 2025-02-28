@@ -3,7 +3,7 @@ import { Loader } from "lucide-react";
 import axios from "axios";
 
 // custom
-import { AVATARS_ICONS, GRID } from "@/data/components";
+import { AVATARS_ICONS, GRID, AVATARS_ICONS_BLUE } from "@/data/components";
 import { cn, playAudio } from "@/lib/utils";
 import { Island, User } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -35,7 +35,7 @@ const StartedGameGrid: React.FC<StartedGameGridProperties> = ({
 
   // local variables
   const userAvatar = AVATARS_ICONS[user?.avatar ?? 0];
-  const opponentAvatar = AVATARS_ICONS[opponent?.avatar ?? 0];
+  const opponentAvatar = AVATARS_ICONS_BLUE[opponent?.avatar ?? 0];
 
   const handlePositionClick = async (position: number) => {
     if (token?.length === 0 || !socket || opponent === undefined || !islandInfoReference.current) return;

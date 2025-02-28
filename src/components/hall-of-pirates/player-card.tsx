@@ -6,7 +6,7 @@ import { Crown, Sword } from "lucide-react";
 // custom
 import { Button } from "../ui/button";
 import { User } from "@/lib/types";
-import { AVATARS_ICONS } from "@/data/components";
+import { AVATARS_ICONS as AVATARS_ICONS_RED, AVATARS_ICONS_BLUE } from "@/data/components";
 import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "../ui/skeleton";
 import ToolTip from "../tooltip";
@@ -21,6 +21,9 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({
   // states
   const [player, setPlayer] = useState<User>();
   const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  // local variables
+  const AVATARS_ICONS = userId === playerId ? AVATARS_ICONS_RED : AVATARS_ICONS_BLUE;
 
   // fetch user info
   useEffect(() => {
