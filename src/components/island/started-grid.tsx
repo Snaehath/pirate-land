@@ -60,14 +60,14 @@ const StartedGameGrid: React.FC<StartedGameGridProperties> = ({
     }
 
     // selecting captured position
-    // if (captures.includes(position)) {
-    //   playAudio("/audio/error.mp3");
-    //   toast({
-    //     title: "No one else is there",
-    //     variant: "destructive",
-    //   });
-    //   return;
-    // }
+    if (captures.includes(position)) {
+      playAudio("/audio/error.mp3");
+      toast({
+        title: "No one else is there",
+        variant: "destructive",
+      });
+      return;
+    }
 
     playAudio("/audio/tree-hit.mp3");
 

@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Crown } from "lucide-react";
+import { Crown, Sword } from "lucide-react";
 
 // custom
 import { Button } from "../ui/button";
@@ -11,7 +11,10 @@ import { useAppContext } from "@/contexts/app";
 import { Skeleton } from "../ui/skeleton";
 import ToolTip from "../tooltip";
 
-const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
+const PlayerCard: React.FC<PlayerCardProperties> = ({
+  playerId,
+  fromScorecard,
+}) => {
   // hooks
   const { token, userId } = useAppContext();
 
@@ -63,7 +66,11 @@ const PlayerCard: React.FC<PlayerCardProperties> = ({ playerId }) => {
             className="w-20"
           />
           {player.name}
-          {userId === playerId && <ToolTip content="You"><div><Crown /></div></ToolTip>}
+          {userId === playerId && (
+            <ToolTip content="You">
+              <div>{fromScorecard ? <Sword /> : <Crown />}</div>
+            </ToolTip>
+          )}
         </Button>
       </Link>
     )
@@ -74,4 +81,5 @@ export default PlayerCard;
 
 interface PlayerCardProperties {
   playerId: string;
+  fromScorecard?: boolean;
 }

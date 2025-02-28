@@ -338,7 +338,7 @@ const IslandPage: React.FC = () => {
             "🛡️ Strategic Prep Underway! The game will begin once all players have set their positions. ⚔️🏴‍☠️"}
           {islandInfo?.status === "STARTED" && (islandInfo.chance === userId
             ? "Your chance"
-            : `${inviteeInfo?.name ?? "Opponet"}'s chance`)}
+            : `${islandInfo.chance === inviteeInfo?.id ?  inviteeInfo?.name ?? "Opponent" : creatorInfo?.name ?? "Opponent"}'s chance`)}
         </CardDescription>
       </CardHeader>
       <CardContent

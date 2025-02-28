@@ -14,7 +14,7 @@ import { Skeleton } from "../ui/skeleton";
 
 const IslandScoreCard: React.FC<IslandScoreCardProperties> = ({ islandId }) => {
   // hooks
-  const { token } = useAppContext();
+  const { token, setIsland } = useAppContext();
   const navigate = useNavigate();
 
   // states
@@ -46,6 +46,7 @@ const IslandScoreCard: React.FC<IslandScoreCardProperties> = ({ islandId }) => {
 
   const handleBackToHarbor = () => {
     navigate("/harbor");
+    setIsland!("");
   };
 
   if (isLoading) {
@@ -106,6 +107,7 @@ const IslandScoreCard: React.FC<IslandScoreCardProperties> = ({ islandId }) => {
             <div className="flex items-center gap-3">
               <Typography className="font-pirate-kids"># 1</Typography>
               <PlayerCard
+                fromScorecard
                 playerId={
                   +scorecard.creator_score >= +scorecard.invitee_score
                     ? scorecard.creator
@@ -117,6 +119,7 @@ const IslandScoreCard: React.FC<IslandScoreCardProperties> = ({ islandId }) => {
             <div className="flex items-center gap-3">
               <Typography className="font-pirate-kids"># 2</Typography>
               <PlayerCard
+                fromScorecard
                 playerId={
                   +scorecard.creator_score < +scorecard.invitee_score
                     ? scorecard.creator
