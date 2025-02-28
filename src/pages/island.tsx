@@ -320,7 +320,7 @@ const IslandPage: React.FC = () => {
         "self-center",
         !isLoading &&
           islandInfo?.status !== "CREATED" &&
-          "bg-transparent rounded-none shadow-none border-none p-0"
+          "bg-transparent rounded-none shadow-none shadow-transparent border-none p-0"
       )}
     >
       <CardHeader

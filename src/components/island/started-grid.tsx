@@ -23,6 +23,7 @@ const StartedGameGrid: React.FC<StartedGameGridProperties> = ({
   isCreator,
   setIslandInfo,
   islandInfoReference,
+  captured,
 }) => {
   // hooks
   const { toast } = useToast();
@@ -34,7 +35,7 @@ const StartedGameGrid: React.FC<StartedGameGridProperties> = ({
 
   // local variables
   const userAvatar = AVATARS_ICONS[user?.avatar ?? 0];
-  const opponentAvatar = AVATARS_ICONS[user?.avatar ?? 0];
+  const opponentAvatar = AVATARS_ICONS[opponent?.avatar ?? 0];
 
   const handlePositionClick = async (position: number) => {
     if (token?.length === 0 || !socket || opponent === undefined || !islandInfoReference.current) return;
@@ -138,7 +139,10 @@ const StartedGameGrid: React.FC<StartedGameGridProperties> = ({
               "rounded-base shadow shadow-white hover:shadow-shadow cursor-pointer size-14",
               currentUpdating === index &&
                 "flex [&_img]:opacity-50 items-center justify-center cursor-not-allowed shadow-inner hover:shadow-none",
-              positions.includes(index) && "bg-black/50"
+              positions.includes(index) && "bg-black/50",
+              positions.includes(index) && captures.includes(index) && "grid grid-cols-2",
+              captured.includes(index) && "bg-red-500",
+              captures.includes(index) && "bg-green-500",
             )}
           >
             {positions.includes(index) && (
