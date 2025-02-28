@@ -44,9 +44,13 @@ const IslandScoreCard: React.FC<IslandScoreCardProperties> = ({ islandId }) => {
     fetchScoreCard();
   }, [islandId, token]);
 
-  const handleBackToHarbor = () => {
-    navigate("/harbor");
+  const emptyTheIsland = () => {
     setIsland!("");
+  };
+
+  const handleBackToHarbor = () => {
+    emptyTheIsland();
+    navigate("/harbor");
   };
 
   if (isLoading) {
@@ -104,7 +108,10 @@ const IslandScoreCard: React.FC<IslandScoreCardProperties> = ({ islandId }) => {
         </CardHeader>
         <CardContent>
           <div className="flex flex-col gap-6">
-            <div className="flex items-center gap-3">
+            <div
+              className="flex items-center gap-3"
+              onClick={emptyTheIsland}
+            >
               <Typography className="font-pirate-kids"># 1</Typography>
               <PlayerCard
                 fromScorecard
@@ -116,7 +123,10 @@ const IslandScoreCard: React.FC<IslandScoreCardProperties> = ({ islandId }) => {
               />
               <Typography className="font-pirate-kids">{Math.max(+scorecard.creator_score, +scorecard.invitee_score)}</Typography>
             </div>
-            <div className="flex items-center gap-3">
+            <div
+              className="flex items-center gap-3"
+              onClick={emptyTheIsland}
+            >
               <Typography className="font-pirate-kids"># 2</Typography>
               <PlayerCard
                 fromScorecard
